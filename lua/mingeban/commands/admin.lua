@@ -40,7 +40,7 @@ kick:AddArgument(ARGTYPE_STRING)
 
 local ban = mingeban.CreateCommand("ban", function(caller, line, ply, time, reason)
 	local foundPlayer = false
-	if not ply:upper():Trim():match("^STEAM_0:%d:%d+$") then
+	if not mingeban.utils.validSteamID(ply) then
 		local results = mingeban.utils.findPlayer(ply)
 		if results[1] then
 			ply = results[1]
@@ -101,7 +101,7 @@ ban:AddArgument(ARGTYPE_STRING)
 
 local unban = mingeban.CreateCommand("unban", function(caller, line, ply)
 	ply = ply:upper():Trim()
-	if not ply:match("^STEAM_0:%d:%d+$") then return false, "Invalid SteamID" end
+	if not mingeban.utils.validSteamID(ply) then return false, "Invalid SteamID" end
 
 	mingeban.utils.print(mingeban.colors.Cyan, tostring(caller) .. " unbanned " .. tostring(ply) .. ".")
 	mingeban.Unban(ply)
