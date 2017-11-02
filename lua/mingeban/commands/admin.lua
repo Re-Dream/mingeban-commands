@@ -238,6 +238,14 @@ give:AddArgument(ARGTYPE_PLAYERS)
 give:AddArgument(ARGTYPE_STRING)
 	:SetName("weapon_class")
 
+local fire = mingeban.CreateCommand("fire", function(caller, line)
+	local ent = caller:GetEyeTrace().Entity
+	if IsValid(ent) then
+		ent:Fire(line)
+	end
+end)
+fire:SetAllowConsole(false)
+
 --[[ server stays dead with _restart rip
 
 mingeban.CreateCommand("reboot",function(caller)
