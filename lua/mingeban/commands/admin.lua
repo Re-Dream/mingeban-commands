@@ -281,7 +281,7 @@ if banni then
 			return false,"Incorrect time!"
 		end
 
-		local ply = easylua.FindEntity(stid)
+		local ply = mingeban.utils.findPlayer(stid)
 
 		local steamid = IsValid(caller) and caller:SteamID() or "Server"
 		banni.ban(steamid,(IsValid(ply) and ply:SteamID() or stid),tm,reason)
@@ -290,11 +290,14 @@ if banni then
 	bbaann:AddArgument(ARGTYPE_STRING)
 	bbaann:AddArgument(ARGTYPE_STRING)
 
-	local unbbaann = mingeban.CreateCommand("unbanni", function(caller,line,ply,time,reason)
+	local unbbaann = mingeban.CreateCommand("unbanni", function(caller,line,stid,time,reason)
 		local steamid = IsValid(caller) and caller:SteamID() or "Server"
-		banni.unban(steamid,ply:SteamID(),reason)
+		
+		local ply = mingeban.utils.findPlayer(stid)
+		
+		banni.unban(steamid,(IsValid(ply) and ply:SteamID() or stid),reason)
 	end)
-	unbbaann:AddArgument(ARGTYPE_PLAYER)
+	unbbaann:AddArgument(ARGTYPE_STRING)
 	unbbaann:AddArgument(ARGTYPE_STRING)
 
 	mingeban.GetRank("admin"):AddPermission("command.banni")
