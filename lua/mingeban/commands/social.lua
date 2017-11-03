@@ -9,8 +9,7 @@ local function doLinkOpenFunc(link)
 			return false, "ChatAddText / OpenURL missing?"
 		end
 
-		caller:ChatAddText(w, "Link opened in the ", g, "Steam Overlay", w, "! If you have it disabled, here's the link:")
-		caller:ChatAddText(g, link)
+		caller:ChatAddText(g, link, w, " opened in the ", g, "Steam Overlay", w, "!")
 		caller:OpenURL(link)
 	end
 end
