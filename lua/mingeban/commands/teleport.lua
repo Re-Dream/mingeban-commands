@@ -22,7 +22,7 @@ local teleportSounds = {
 	"jumplanding4",
 	"jumplanding_zombie",
 }
-local function goto(from, to, istp)
+local function goto(from, to, istp, nolook)
 	if not IsValid(from) then return end
 
 	local ent = to
@@ -77,12 +77,14 @@ local function goto(from, to, istp)
 	elseif isvector(ent) then
 		from:SetPos(ent)
 		if not istp then
-			if from:IsPlayer() then
-				from:LookAt(ent, 0.25)
-			else
-				local gpo = from:GetPhysicsObject()
-				if IsValid(gpo) then
-					gpo:EnableMotion(false)
+			if not nolook then
+				if from:IsPlayer() then
+					from:LookAt(ent, 0.25)
+				else
+					local gpo = from:GetPhysicsObject()
+					if IsValid(gpo) then
+						gpo:EnableMotion(false)
+					end
 				end
 			end
 			from:EmitSound("buttons/button15.wav")
@@ -95,11 +97,31 @@ local function goto(from, to, istp)
 
 end
 
+local locations = {
+	redream_waterlands_2 = {
+		spawn = Vector (5929.3115234375, 6595.52734375, 184.03125),
+		circle = Vector (-5858.40625, -357.07162475586, 504.03125),
+		cross = Vector (-5858.40625, -357.07162475586, 504.03125),
+		rgv = Vector (3451.7734375, 8075.2065429688, 168.03125),
+		bigbuilding = Vector (3451.7734375, 8075.2065429688, 168.03125),
+		ports = Vector (-11588.7578125, 3672.7575683594, 48.03125)
+	}
+}
+
 local go = mingeban.CreateCommand({"go", "goto"}, function(caller, line, pos, y, z)
 	if caller:IsAdmin() and y and z then
 		pos = Vector(tonumber(pos), tonumber(y), tonumber(z))
 	end
-	return goto(caller, pos)
+
+	local nolook = false
+
+	for k,v in pairs(locations[game.GetMap()]) do
+		if(pos == k) then
+			pos = v
+			nolook = true
+		end
+	end
+	return goto(caller, pos, false, nolook)
 end)
 go:SetAllowConsole(false)
 go:AddArgument(ARGTYPE_VARARGS)
