@@ -290,7 +290,7 @@ if banni then
 	bbaann:AddArgument(ARGTYPE_STRING)
 	bbaann:AddArgument(ARGTYPE_STRING)
 
-	local unbbaann = mingeban.CreateCommand("unbanni", function(caller,line,stid,time,reason)
+	local unbbaann = mingeban.CreateCommand("unbanni", function(caller,line,stid,reason)
 		local steamid = IsValid(caller) and caller:SteamID() or "Server"
 		
 		local ply = mingeban.utils.findPlayer(stid)[1]
