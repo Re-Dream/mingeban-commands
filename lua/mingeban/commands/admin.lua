@@ -281,7 +281,7 @@ if banni then
 			return false,"Incorrect time!"
 		end
 
-		local ply = mingeban.utils.findPlayer(stid)
+		local ply = mingeban.utils.findPlayer(stid)[1]
 
 		local steamid = IsValid(caller) and caller:SteamID() or "Server"
 		banni.ban(steamid,(IsValid(ply) and ply:SteamID() or stid),tm,reason)
@@ -293,7 +293,7 @@ if banni then
 	local unbbaann = mingeban.CreateCommand("unbanni", function(caller,line,stid,time,reason)
 		local steamid = IsValid(caller) and caller:SteamID() or "Server"
 		
-		local ply = mingeban.utils.findPlayer(stid)
+		local ply = mingeban.utils.findPlayer(stid)[1]
 		
 		banni.unban(steamid,(IsValid(ply) and ply:SteamID() or stid),reason)
 	end)
