@@ -86,6 +86,10 @@ local function goto(from, to, istp, nolook)
 						gpo:EnableMotion(false)
 					end
 				end
+			else
+				if from:IsPlayer() then
+					from:SetEyeAngles(Angle(0,-90,0))	
+				end
 			end
 			from:EmitSound("buttons/button15.wav")
 		else
