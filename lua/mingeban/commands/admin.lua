@@ -246,6 +246,61 @@ local fire = mingeban.CreateCommand("fire", function(caller, line)
 end)
 fire:SetAllowConsole(false)
 
+if banni then
+	local function calcTime(time)
+		local timeNum = 0
+		local timeInput = false
+		for months in time:gmatch("(%d+)M") do
+			timeNum = timeNum + (86400 * 30) * months
+			timeInput = true
+		end
+		for days in time:gmatch("(%d+)d") do
+			timeNum = timeNum + 86400 * days
+			timeInput = true
+		end
+		for hours in time:gmatch("(%d+)h") do
+			timeNum = timeNum + 3600 * hours
+			timeInput = true
+		end
+		for minutes in time:gmatch("(%d+)m") do
+			timeNum = timeNum + 60 * minutes
+			timeInput = true
+		end
+		for seconds in time:gmatch("(%d+)s") do
+			timeNum = timeNum + seconds
+			timeInput = true
+		end
+
+		return timeInput,timeNum
+	end
+
+	local bbaann = mingeban.CreateCommand("banni", function(caller,line,stid,time,reason)
+		local success,tm = calcTime(time)
+
+		if not success then
+			return false,"Incorrect time!"
+		end
+
+		local ply = easylua.FindEntity(stid)
+
+		local steamid = IsValid(caller) and caller:SteamID() or "Server"
+		banni.ban(steamid,(IsValid(ply) and ply:SteamID() or stid),tm,reason)
+	end)
+	bbaann:AddArgument(ARGTYPE_STRING)
+	bbaann:AddArgument(ARGTYPE_STRING)
+	bbaann:AddArgument(ARGTYPE_STRING)
+
+	local unbbaann = mingeban.CreateCommand("unbanni", function(caller,line,ply,time,reason)
+		local steamid = IsValid(caller) and caller:SteamID() or "Server"
+		banni.unban(steamid,ply:SteamID(),reason)
+	end)
+	unbbaann:AddArgument(ARGTYPE_PLAYER)
+	unbbaann:AddArgument(ARGTYPE_STRING)
+
+	mingeban.GetRank("admin"):AddPermission("command.banni")
+	mingeban.GetRank("admin"):AddPermission("command.unbanni")	
+end
+
 --[[ server stays dead with _restart rip
 
 mingeban.CreateCommand("reboot",function(caller)
