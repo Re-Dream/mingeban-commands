@@ -1,4 +1,3 @@
-
 if SERVER then
 	util.AddNetworkString("mingeban-ytplay")
 
@@ -23,6 +22,7 @@ if SERVER then
 
 		YT.Search(query, function(body, len, headers)
 			if not body then
+				ply:ChatPrint("unsuccessful")
 				unsuccessful = true
 				return
 			end
@@ -31,17 +31,19 @@ if SERVER then
 
 			if json.error then
 				MsgC(Color(255, 0, 0), "[YouTube] Error: code - " .. json.error.code .. ", message - " .. json.error.message .. ".")
+				ply:ChatPrint("unsuccessful")
 				unsuccessful = true
 				return
 			end
 
-			if json.items == {} then
+			if json.items[1] == nil then
+				ply:ChatPrint("not found") 
 				notfound = true
 				return
 			end
 
 			local id = json.items[1].id.videoId
-			if not id then unsuccessful = true return end
+			if not id then ply:ChatPrint("unsuccessful") unsuccessful = true return end
 
 			net.Start("mingeban-ytplay")
 				net.WriteString("https://youtube.com/watch?v="..id)
@@ -63,7 +65,9 @@ else
 	net.Receive("mingeban-ytplay", function()
 		local url = net.ReadString()
 
-		MP.Request(table.GetFirstValue(MP.List).Entity, url)
+		if table.GetFirstValue(MP.List) then
+			MP.Request(table.GetFirstValue(MP.List).Entity, url)
+		end
 	end)
 end
 
