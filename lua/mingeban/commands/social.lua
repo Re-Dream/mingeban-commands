@@ -2,11 +2,13 @@
 if SERVER then
 	util.AddNetworkString("mingeban-ytplay")
 
-	local ytplay = mingeban.CreateCommand("ytplay", function(ply, line, query)
+	local ytplay = mingeban.CreateCommand("ytplay", function(ply, line)
+		local query = line
+
 		local unsuccessful = false
 		local notfound = false
 
-		if string.find(query, "youtu.be") or string.find(query, "youtube.com/watch") then
+		if query:match("youtu.be") or query:match("youtube.com/watch") then
 			local url = query
 
 			url = string.Replace(url, "youtu.be/", "www.youtube.com/watch?v=")
