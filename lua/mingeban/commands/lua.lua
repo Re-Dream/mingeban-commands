@@ -7,9 +7,9 @@ pcall(function()
 	require("cllup")
 
 	function RefreshLua(line)
-		if not isstring(line) then return false, "invalid path" end
+		if not isstring(line) then return false, "Invalid path" end
 		line = line:Trim()
-		if line == "" or not line:match("%.lua$") then return false, "invalid file extension" end
+		if line == "" or not line:match("%.lua$") then return false, "Invalid file extension" end
 
 		local path = line:match(".+/") or ""
 		local filename = line:match("([^/]+)%.lua$")
@@ -23,21 +23,17 @@ pcall(function()
 			end
 		end
 
-		if path:Trim() == "" then return false, "doesn't exist" end
+		if path:Trim() == "" then return false, "Doesn't exist" end
 
 		local exists = file.Exists((path:match("lua/(.+)") or path) .. filename .. ".lua", "LUA")
-		if not exists then return false, "doesn't exist" end
+		if not exists then return false, "Doesn't exist" end
 
 		Msg("[RefreshLua] ") print("Updating " .. path .. filename .. ".lua...")
 		return HandleChange_Lua(path .. "/", filename, "lua")
 	end
 
 	mingeban.CreateCommand("refreshlua", function(caller, line)
-		local success, info = RefreshLua(line)
-
-		if success == false then
-			return false, info
-		end
+		return RefreshLua(line)
 	end)
 end)
 

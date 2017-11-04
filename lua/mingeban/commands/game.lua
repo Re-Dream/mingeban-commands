@@ -12,6 +12,8 @@ if SERVER then
 	kill:SetAllowConsole(false)
 
 	local revive = mingeban.CreateCommand({"revive", "respawn"}, function(caller)
+		if caller:Alive() then return end
+
 		local oldPos, oldAng = caller:GetPos(), caller:EyeAngles()
 		caller:Spawn()
 		caller:SetPos(oldPos)
