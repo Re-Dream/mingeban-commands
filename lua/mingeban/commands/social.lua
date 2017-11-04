@@ -37,6 +37,7 @@ if SERVER then
 
 			if json.items == {} then
 				notfound = true
+				return
 			end
 
 			local id = json.items[1].id.videoId
