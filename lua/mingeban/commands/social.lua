@@ -1,66 +1,66 @@
 
 if SERVER then
-	util.AddNetworkString("mingeban_ytplay")
+	util.AddNetworkString("mingeban-ytplay")
 
-	local a = mingeban.CreateCommand("ytplay", function(ply, line, query)
+	local ytplay = mingeban.CreateCommand("ytplay", function(ply, line, query)
 		local unsuccessful = false
 		local notfound = false
 
 		if string.find(query, "youtu.be") or string.find(query, "youtube.com/watch") then
 			local url = query
 
-			url = string.Replace(url,"youtu.be/","www.youtube.com/watch?v=")
+			url = string.Replace(url, "youtu.be/", "www.youtube.com/watch?v=")
 
-			net.Start("mingeban_ytplay")
-			net.WriteString(url)
+			net.Start("mingeban-ytplay")
+				net.WriteString(url)
 			net.Send(ply)
 			return
 		end
 
 		ply:ChatPrint("Finding the video, please wait...")
 
-		YT.Search(query, function(body,len,headers)
+		YT.Search(query, function(body, len, headers)
 			if not body then
 				unsuccessful = true
 				return
 			end
-			
-			local ass = util.JSONToTable(body)
-			
-			if ass.error then
-				MsgC(Color(255,0,0), "YT - Error: code - "..ass.error.code..", message - "..ass.error.message..".")
+
+			local json = util.JSONToTable(body)
+
+			if json.error then
+				MsgC(Color(255, 0, 0), "[YouTube] Error: code - " .. json.error.code .. ", message - " .. json.error.message .. ".")
 				unsuccessful = true
 				return
 			end
 
-			if ass.items == {} then
+			if json.items == {} then
 				notfound = true
 			end
 
-			local id = ass.items[1].id.videoId
-			if(id == nil) then unsuccessful = true return end
+			local id = json.items[1].id.videoId
+			if not id then unsuccessful = true return end
 
-			net.Start("mingeban_ytplay")
-			net.WriteString("https://youtube.com/watch?v="..id)
+			net.Start("mingeban-ytplay")
+				net.WriteString("https://youtube.com/watch?v="..id)
 			net.Send(ply)
 		end)
-		
+
 		if notfound then
-			return false,"Not found"
+			return false, "Not found"
 		end
 
 		if unsuccessful then
-			return false,"Unsuccessful"
+			return false, "Unsuccessful"
 		end
-
-
 	end)
-	a:AddArgument(ARGTYPE_STRING)
+	ytplay:SetAllowConsole(false)
+	ytplay:AddArgument(ARGTYPE_STRING)
+		:SetName("url")
 else
-	net.Receive("mingeban_ytplay", function()
+	net.Receive("mingeban-ytplay", function()
 		local url = net.ReadString()
 
-		MP.Request(table.GetFirstValue(MP.List).Entity,url)
+		MP.Request(table.GetFirstValue(MP.List).Entity, url)
 	end)
 end
 
