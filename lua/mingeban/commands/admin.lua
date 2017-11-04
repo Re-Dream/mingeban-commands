@@ -296,7 +296,7 @@ if banni then
 		:SetName("reason")
 		:SetOptional(true)
 
-	local unbbaann = mingeban.CreateCommand("unbanni", function(caller,line,stid,reason)
+	local unbbaann = mingeban.CreateCommand("unbanni", function(caller,line,ply,reason)
 		local foundPlayer = false
 		if not mingeban.utils.validSteamID(ply) then
 			local results = mingeban.utils.findPlayer(ply)
