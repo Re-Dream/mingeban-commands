@@ -286,7 +286,7 @@ if banni then
 			" for reason: '" .. reason ..
 			"'."
 		)
-		banni.ban(IsValid(caller) and caller:SteamID() or caller, ply, timeNum, reason)
+		banni.ban(caller:SteamID(), type(ply) == "string" and ply or ply:SteamID(), timeNum, reason)
 	end)
 	bbaann:AddArgument(ARGTYPE_STRING)
 		:SetName("player/steamid")
@@ -317,7 +317,7 @@ if banni then
 			" with reason: '" .. reason ..
 			"'."
 		)
-		banni.unban(IsValid(caller) and caller:SteamID() or caller, ply, reason)
+		banni.unban(caller:SteamID(), type(ply) == "string" and ply or ply:SteamID(), reason)
 	end)
 	unbbaann:AddArgument(ARGTYPE_STRING)
 		:SetName("player/steamid")
