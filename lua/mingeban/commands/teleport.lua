@@ -113,8 +113,9 @@ local go = mingeban.CreateCommand({"go", "goto"}, function(caller, line, pos, y,
 
 	if isstring(pos) then
 		for name, vec in next, locations[game.GetMap()] do
-			if name:match(pos:lower()) then
+			if name == pos:lower() then
 				pos = vec
+				break
 			end
 		end
 	end
