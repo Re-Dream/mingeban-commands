@@ -60,6 +60,19 @@ if CLIENT then
 	            yalign = TEXT_ALIGN_BOTTOM,
 	            color = Color(255,255,255,255)
             })
+					
+	    surface.DrawRect(0, bgpos-40, 80, 55)
+            surface.SetDrawColor(Color( 255, 255, 255, 255 ))
+            surface.DrawLine(80,bgpos-30, 80, bgpos+7.5)
+            
+            draw.Text({
+	            text = "PSA",
+	            font = "Roboto",
+	            pos = { 15, textpos },
+	            xalign = TEXT_ALIGN_LEFT,
+	            yalign = TEXT_ALIGN_BOTTOM,
+	            color = Color(255,255,255,255)
+            })
         end)
     end )
 end
