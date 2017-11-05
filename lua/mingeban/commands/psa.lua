@@ -28,7 +28,7 @@ if CLIENT then
     end
     CreateFont() -- create font twice just in case
     net.Receive( "message", function(len)
-        local time = CurTime()
+        local time = SysTime()-time
         local num = 35
         local psamessage = net.ReadString()
 		surface.PlaySound("buttons/button3.wav")
