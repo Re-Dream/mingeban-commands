@@ -1,16 +1,20 @@
 if SERVER then
     util.AddNetworkString("message")
-    local function send(msg,ply)
+    local function send(msg,ply,auth)
         net.Start("message",false)
         net.WriteString(msg)
+        net.WriteString(auth)
         net.Send(ply)
     end
     
-    mingeban.CreateCommand("psa", function(caller,line)
+    local psa = mingeban.CreateCommand("psa", function(caller,line)
     	for k,v in pairs(player.GetAll()) do
-    		send(line,v)
-		end
+    		send(line,v,caller:Name())
+	end
     end)
+    
+    psa:SetHideChat(true)
+    mingeban.GetRank("admin"):AddPermission("command.psa")
 end
 
 if CLIENT then
@@ -25,9 +29,11 @@ if CLIENT then
     end
     CreateFont() -- create font twice just in case
     net.Receive( "message", function(len)
-        local time = CurTime()
+        local time = SysTime()
         local num = 35
         local psamessage = net.ReadString()
+        local author = net.ReadString()
+        print("PSA from "..author..": "..psamessage)
 		surface.PlaySound("buttons/button3.wav")
         
         local strlen = string.len(psamessage)
@@ -35,7 +41,7 @@ if CLIENT then
         local x = biggershit and ScrW() or ScrW()/2
         
         hook.Add( "HUDPaint", "drawPSA", function()
-            local timeex = (CurTime()-time)
+            local timeex = (SysTime()-time)
             if (timeex > 5) then
                 timeex =- timeex
                 timeex = timeex + 10
@@ -46,14 +52,27 @@ if CLIENT then
             surface.DrawRect(0, bgpos-40, ScrW(), 55)
             
             if biggershit then
-            	x = x - strlen / 107 * 2.5
-        	end
+            	x = x - 6
+            end
             
             draw.Text({
 	            text = psamessage,
 	            font = "Roboto",
 	            pos = { x, textpos },
 	            xalign = biggershit and TEXT_ALIGN_LEFT or TEXT_ALIGN_CENTER,
+	            yalign = TEXT_ALIGN_BOTTOM,
+	            color = Color(255,255,255,255)
+            })
+					
+	    surface.DrawRect(0, bgpos-40, 80, 55)
+            surface.SetDrawColor(Color( 255, 255, 255, 255 ))
+            surface.DrawLine(80,bgpos-30, 80, bgpos+7.5)
+            
+            draw.Text({
+	            text = "PSA",
+	            font = "Roboto",
+	            pos = { 15, textpos },
+	            xalign = TEXT_ALIGN_LEFT,
 	            yalign = TEXT_ALIGN_BOTTOM,
 	            color = Color(255,255,255,255)
             })
