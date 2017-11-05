@@ -49,7 +49,7 @@ if CLIENT then
             surface.DrawRect(0, bgpos-40, ScrW(), 55)
             
             if biggershit then
-            	x = x - 2.5
+            	x = x - 1
             end
             
             draw.Text({
