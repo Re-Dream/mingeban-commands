@@ -38,7 +38,7 @@ if CLIENT then
         local x = biggershit and ScrW() or ScrW()/2
         
         hook.Add( "HUDPaint", "drawPSA", function()
-            local timeex = (CurTime()-time)
+            local timeex = (SysTime()-time)
             if (timeex > 5) then
                 timeex =- timeex
                 timeex = timeex + 10
@@ -49,8 +49,8 @@ if CLIENT then
             surface.DrawRect(0, bgpos-40, ScrW(), 55)
             
             if biggershit then
-            	x = x - strlen / 107 * 2.5
-        	end
+            	x = x - 2.5
+            end
             
             draw.Text({
 	            text = psamessage,
