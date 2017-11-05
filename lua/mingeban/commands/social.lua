@@ -37,7 +37,7 @@ if SERVER then
 			end
 
 			if json.items[1] == nil then
-				ply:ChatPrint("not found") 
+				ply:ChatPrint("not found")
 				notfound = true
 				return
 			end
@@ -46,7 +46,7 @@ if SERVER then
 			if not id then ply:ChatPrint("unsuccessful") unsuccessful = true return end
 
 			net.Start("mingeban-ytplay")
-				net.WriteString("https://youtube.com/watch?v="..id)
+				net.WriteString("https://youtube.com/watch?v=" .. id)
 			net.Send(ply)
 		end)
 
@@ -65,8 +65,9 @@ else
 	net.Receive("mingeban-ytplay", function()
 		local url = net.ReadString()
 
-		if table.GetFirstValue(MP.List) then
-			MP.Request(table.GetFirstValue(MP.List).Entity, url)
+		local mp = table.GetFirstValue(MP.List)
+		if mp then
+			local result = MP.Request(mp, url)
 		end
 	end)
 end
