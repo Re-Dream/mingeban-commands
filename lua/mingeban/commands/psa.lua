@@ -6,11 +6,13 @@ if SERVER then
         net.Send(ply)
     end
     
-    mingeban.CreateCommand("psa", function(caller,line)
+    local psa = mingeban.CreateCommand("psa", function(caller,line)
     	for k,v in pairs(player.GetAll()) do
     		send(line,v)
-		end
+	end
     end)
+	
+    mingeban.GetRank("admin"):AddPermission("command.psa")
 end
 
 if CLIENT then
