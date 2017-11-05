@@ -1,14 +1,15 @@
 if SERVER then
     util.AddNetworkString("message")
-    local function send(msg,ply)
+    local function send(msg,ply,auth)
         net.Start("message",false)
         net.WriteString(msg)
+        net.WriteString(auth)
         net.Send(ply)
     end
     
     local psa = mingeban.CreateCommand("psa", function(caller,line)
     	for k,v in pairs(player.GetAll()) do
-    		send(line,v)
+    		send(line,v,caller:Name())
 	end
     end)
     
@@ -31,6 +32,8 @@ if CLIENT then
         local time = SysTime()
         local num = 35
         local psamessage = net.ReadString()
+        local author = net.ReadString()
+        print("PSA from "..author..": "..psamessage)
 		surface.PlaySound("buttons/button3.wav")
         
         local strlen = string.len(psamessage)
@@ -49,7 +52,7 @@ if CLIENT then
             surface.DrawRect(0, bgpos-40, ScrW(), 55)
             
             if biggershit then
-            	x = x - 1
+            	x = x - 6
             end
             
             draw.Text({
