@@ -96,7 +96,7 @@ local function goto(from, to, istp)
 end
 
 local locations = {
-	redream_waterlands_2 = {
+	redream_waterlands = {
 		spawn = Vector(5929.3115234375, 6595.52734375, 184.03125),
 		circle = Vector(-5858.40625, -357.07162475586, 504.03125),
 		cross = Vector(-5858.40625, -357.07162475586, 504.03125),
@@ -106,13 +106,21 @@ local locations = {
 	}
 }
 
+local location
+for map, _ in next, locations do
+	local match = game.GetMap():match(map)
+	if (not location or #location < #match) and match then
+		location = match
+	end
+end
+
 local go = mingeban.CreateCommand({"go", "goto"}, function(caller, line, pos, y, z)
 	if caller:IsAdmin() and y and z then
 		pos = Vector(tonumber(pos), tonumber(y), tonumber(z))
 	end
 
-	if isstring(pos) then
-		for name, vec in next, locations[game.GetMap()] do
+	if isstring(pos) and location then
+		for name, vec in next, locations[location] do
 			if name == pos:lower() then
 				pos = vec
 				break
