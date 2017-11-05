@@ -11,7 +11,8 @@ if SERVER then
     		send(line,v)
 	end
     end)
-	
+    
+    psa:SetHideChat(true)
     mingeban.GetRank("admin"):AddPermission("command.psa")
 end
 
