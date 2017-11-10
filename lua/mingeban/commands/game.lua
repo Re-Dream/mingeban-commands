@@ -1,6 +1,7 @@
 
 if SERVER then
-	local kill = mingeban.CreateCommand({"kill", "wrist", "suicide"}, function(caller, line)
+	util.AddNetworkString("mingeban-command-kill")
+	local kill = mingeban.CreateCommand({"kill", "wrist", "suicide"}, function(caller, line, maxVel, maxAngVel)
 		local ok = hook.Run("CanPlayerSuicide", ply)
 		if ok == false then
 			return false, "Can't suicide"
@@ -8,8 +9,19 @@ if SERVER then
 
 		caller:KillSilent()
 		caller:CreateRagdoll()
+		net.Start("mingeban-command-kill")
+			net.WriteEntity(caller)
+			net.WriteInt(maxVel or 0, 16)
+			net.WriteInt(maxAngVel or 0, 16)
+		net.Broadcast()
 	end)
 	kill:SetAllowConsole(false)
+	kill:AddArgument(ARGTYPE_NUMBER)
+		:SetOptional(true)
+		:SetName("max velocity")
+	kill:AddArgument(ARGTYPE_NUMBER)
+		:SetOptional(true)
+		:SetName("max angle velocity")
 
 	local revive = mingeban.CreateCommand({"revive", "respawn"}, function(caller)
 		if caller:Alive() then return end
@@ -78,6 +90,44 @@ if SERVER then
 		ChatAddText(col, ply:Nick(), "'s FPS: ", fps, ", server: ", svfps)
 	end)
 elseif CLIENT then
+	local function rand(i)
+		return util.SharedRandom(tostring(CurTime()) .. "_" .. i, -1, 1)
+	end
+	net.Receive("mingeban-command-kill", function()
+		local ply = net.ReadEntity()
+		local maxVel = net.ReadInt(16)
+		local maxAngVel = net.ReadInt(16)
+		if maxVel == 0 and maxAngVel == 0 then return end
+
+		local vel = ply:GetAimVector() * maxVel
+		local angVel = Vector(rand("x") * maxAngVel, rand("y") * maxAngVel, rand("z") * maxAngVel)
+
+		local hookId = "_" .. ply:EntIndex() .. "_ragdoll"
+		hook.Add("OnEntityCreated", hookId, function(ent)
+			if ent:GetClass() == "class C_HL2MPRagdoll" then
+				local rag = ply:GetRagdollEntity()
+				hook.Add("Think", hookId, function()
+					if IsValid(rag) and rag == ent then
+						for i = 0, rag:GetPhysicsObjectCount() - 1 do
+							local phys = rag:GetPhysicsObjectNum(i)
+							if IsValid(phys) then
+								phys:SetVelocity(vel)
+								phys:AddAngleVelocity(angVel)
+							end
+						end
+						local phys = rag:GetPhysicsObject()
+						if IsValid(phys) then
+							phys:SetVelocity(vel)
+							phys:AddAngleVelocity(angVel)
+							hook.Remove("Think", hookId)
+						end
+					end
+					hook.Remove("OnEntityCreated", hookId)
+				end)
+			end
+		end)
+	end)
+
 	net.Receive("mingeban-command-tool", function()
 		local name = net.ReadString()
 
