@@ -109,7 +109,7 @@ elseif CLIENT then
 			if ent:GetClass() == "class C_HL2MPRagdoll" then
 				local rag = ply:GetRagdollEntity()
 				hook.Add("Think", hookId, function()
-					if IsValid(rag) and rag == ent then
+					if IsValid(rag) and IsValid(ent) and rag == ent then
 						for i = 0, rag:GetPhysicsObjectCount() - 1 do
 							local phys = rag:GetPhysicsObjectNum(i)
 							if IsValid(phys) then
