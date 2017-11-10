@@ -11,6 +11,7 @@ if SERVER then
 		caller:CreateRagdoll()
 		net.Start("mingeban-command-kill")
 			net.WriteEntity(caller)
+			net.WriteInt(CurTime(), 16)
 			net.WriteInt(maxVel or 0, 16)
 			net.WriteInt(maxAngVel or 0, 16)
 		net.Broadcast()
@@ -91,16 +92,17 @@ if SERVER then
 	end)
 elseif CLIENT then
 	local function rand(i)
-		return util.SharedRandom(tostring(CurTime()) .. "_" .. i, -1, 1)
+		return util.SharedRandom(i, -1, 1)
 	end
 	net.Receive("mingeban-command-kill", function()
 		local ply = net.ReadEntity()
+		local time = net.ReadInt(16)
 		local maxVel = net.ReadInt(16)
 		local maxAngVel = net.ReadInt(16)
 		if maxVel == 0 and maxAngVel == 0 then return end
 
 		local vel = ply:GetAimVector() * maxVel
-		local angVel = Vector(rand("x") * maxAngVel, rand("y") * maxAngVel, rand("z") * maxAngVel)
+		local angVel = Vector(rand(time .. "_x") * maxAngVel, rand(time .. "_y") * maxAngVel, rand(time .. "_z") * maxAngVel)
 
 		local hookId = "_" .. ply:EntIndex() .. "_ragdoll"
 		hook.Add("OnEntityCreated", hookId, function(ent)
