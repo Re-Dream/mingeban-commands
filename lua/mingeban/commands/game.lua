@@ -11,7 +11,7 @@ if SERVER then
 		caller:CreateRagdoll()
 		net.Start("mingeban-command-kill")
 			net.WriteEntity(caller)
-			net.WriteInt(CurTime(), 16)
+			net.WriteFloat(CurTime())
 			net.WriteInt(maxVel or 0, 16)
 			net.WriteInt(maxAngVel or 0, 16)
 		net.Broadcast()
@@ -96,7 +96,7 @@ elseif CLIENT then
 	end
 	net.Receive("mingeban-command-kill", function()
 		local ply = net.ReadEntity()
-		local time = net.ReadInt(16)
+		local time = net.ReadFloat()
 		local maxVel = net.ReadInt(16)
 		local maxAngVel = net.ReadInt(16)
 		if maxVel == 0 and maxAngVel == 0 then return end
