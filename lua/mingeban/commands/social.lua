@@ -1,5 +1,5 @@
 if SERVER then
-	util.AddNetworkString("mingeban-ytplay")
+	util.AddNetworkString("mingeban_ytplay")
 
 	local ytplay = mingeban.CreateCommand("ytplay", function(ply, line)
 		local query = line
@@ -12,7 +12,7 @@ if SERVER then
 
 			url = string.Replace(url, "youtu.be/", "www.youtube.com/watch?v=")
 
-			net.Start("mingeban-ytplay")
+			net.Start("mingeban_ytplay")
 				net.WriteString(url)
 			net.Send(ply)
 			return
@@ -45,7 +45,7 @@ if SERVER then
 			local id = json.items[1].id.videoId
 			if not id then ply:ChatPrint("unsuccessful") unsuccessful = true return end
 
-			net.Start("mingeban-ytplay")
+			net.Start("mingeban_ytplay")
 				net.WriteString("https://youtube.com/watch?v=" .. id)
 			net.Send(ply)
 		end)
@@ -62,7 +62,7 @@ if SERVER then
 	ytplay:AddArgument(ARGTYPE_STRING)
 		:SetName("url")
 else
-	net.Receive("mingeban-ytplay", function()
+	net.Receive("mingeban_ytplay", function()
 		local url = net.ReadString()
 
 		local mp = table.GetFirstValue(MP.List)

@@ -115,7 +115,7 @@ clean:AddArgument(ARGTYPE_PLAYERS)
 
 local PLAYER = FindMetaTable("Player")
 
-hook.Add("Initialize", "mingeban-restrictions", function()
+hook.Add("Initialize", "mingeban_restrictions", function()
 	if PLAYER.CheckLimit then
 		PLAYER._CheckLimit = PLAYER._CheckLimit or PLAYER.CheckLimit
 		function PLAYER:CheckLimit(str)
@@ -125,7 +125,7 @@ hook.Add("Initialize", "mingeban-restrictions", function()
 	end
 end)
 if istable(GAMEMODE) then
-	hook.GetTable().Initialize["mingeban-restrictions"]()
+	hook.GetTable().Initialize["mingeban_restrictions"]()
 end
 
 local restrictions = mingeban.CreateCommand("restrictions", function(caller, line, b)

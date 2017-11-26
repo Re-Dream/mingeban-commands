@@ -1,6 +1,6 @@
 
 if SERVER then
-	util.AddNetworkString("mingeban-command-kill")
+	util.AddNetworkString("mingeban_command_kill")
 	local kill = mingeban.CreateCommand({"kill", "wrist", "suicide"}, function(caller, line, maxVel, maxAngVel)
 		local ok = hook.Run("CanPlayerSuicide", ply)
 		if ok == false then
@@ -9,7 +9,7 @@ if SERVER then
 
 		caller:KillSilent()
 		caller:CreateRagdoll()
-		net.Start("mingeban-command-kill")
+		net.Start("mingeban_command_kill")
 			net.WriteEntity(caller)
 			net.WriteFloat(CurTime())
 			net.WriteInt(maxVel or 0, 16)
@@ -58,9 +58,9 @@ if SERVER then
 
 	-- TODO: better clientside command system
 
-	util.AddNetworkString("mingeban-command-tool")
+	util.AddNetworkString("mingeban_command_tool")
 	local tool = mingeban.CreateCommand("tool", function(caller, line, tool)
-		net.Start("mingeban-command-tool")
+		net.Start("mingeban_command_tool")
 			net.WriteString(tool)
 		net.Send(caller)
 	end)
@@ -68,14 +68,14 @@ if SERVER then
 	tool:AddArgument(ARGTYPE_STRING)
 		:SetName("tool")
 
-	util.AddNetworkString("mingeban-command-fps")
+	util.AddNetworkString("mingeban_command_fps")
 	local fps = mingeban.CreateCommand("fps", function(caller)
-		net.Start("mingeban-command-fps")
+		net.Start("mingeban_command_fps")
 		net.Send(caller)
 	end)
 	fps:SetAllowConsole(false)
 	fps:SetHideChat(true)
-	net.Receive("mingeban-command-fps", function(_, ply)
+	net.Receive("mingeban_command_fps", function(_, ply)
 		local fps = math.ceil(net.ReadFloat())
 
 		local col
@@ -94,7 +94,7 @@ elseif CLIENT then
 	local function rand(i)
 		return util.SharedRandom(i, -1, 1)
 	end
-	net.Receive("mingeban-command-kill", function()
+	net.Receive("mingeban_command_kill", function()
 		local ply = net.ReadEntity()
 		local time = net.ReadFloat()
 		local maxVel = net.ReadInt(16)
@@ -130,7 +130,7 @@ elseif CLIENT then
 		end)
 	end)
 
-	net.Receive("mingeban-command-tool", function()
+	net.Receive("mingeban_command_tool", function()
 		local name = net.ReadString()
 
 		local _tools = weapons.Get("gmod_tool").Tool
@@ -154,8 +154,8 @@ elseif CLIENT then
 		end
 	end)
 
-	net.Receive("mingeban-command-fps", function()
-		net.Start("mingeban-command-fps")
+	net.Receive("mingeban_command_fps", function()
+		net.Start("mingeban_command_fps")
 			net.WriteFloat(1 / FrameTime())
 		net.SendToServer()
 	end)
