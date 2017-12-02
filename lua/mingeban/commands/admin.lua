@@ -102,14 +102,19 @@ resetmap:AddArgument(ARGTYPE_NUMBER)
 	:SetOptional(true)
 
 local clean = mingeban.CreateCommand({"clean", "cleanup"}, function(caller, line, plys)
+	local plyName
 	if #plys < 2 then
 		plys[1]:ConCommand("gmod_cleanup")
+		plyName = tostring(plys[1])
 	else
+		plyName = {}
 		for _, ply in next, plys do
 			ply:ConCommand("gmod_cleanup")
+			plyName[#plyName + 1] = tostring(ply)
 		end
 	end
-	mingeban.utils.print(mingeban.colors.Cyan, tostring(caller) .. " cleaned up stuff from \"" .. table.ToString(plys) .. "\"")
+	local str = istable(plyName) and "{" .. table.concat(plyName, ", ") .. "}" or plyName
+	mingeban.utils.print(mingeban.colors.Cyan, tostring(caller) .. " cleaned up stuff from \"" .. str .. "\"")
 end)
 clean:AddArgument(ARGTYPE_PLAYERS)
 

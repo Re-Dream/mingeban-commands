@@ -100,6 +100,7 @@ elseif CLIENT then
 		local maxVel = net.ReadInt(16)
 		local maxAngVel = net.ReadInt(16)
 		if maxVel == 0 and maxAngVel == 0 then return end
+		if not ply.GetAimVector then return end
 
 		local vel = ply:GetAimVector() * maxVel
 		local angVel = Vector(rand(time .. "_x") * maxAngVel, rand(time .. "_y") * maxAngVel, rand(time .. "_z") * maxAngVel)
