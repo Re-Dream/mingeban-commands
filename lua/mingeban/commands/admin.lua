@@ -39,19 +39,18 @@ kick:AddArgument(ARGTYPE_STRING)
 -- rank
 
 local rank = mingeban.CreateCommand("rank", function(caller, line, ply, rank)
-	local ok, err = pcall(function()
-		ply:SetUserGroup(rank)
-	end)
-	if ok then
-		mingeban.utils.print(mingeban.colors.Cyan, tostring(caller) .. " ranked " .. tostring(ply) .. " to '" .. rank .. "'.")
-	else
-		ErrorNoHalt(err)
-	end
-	return ok, err
+	local rank = mingeban.GetRank(rank)
+	if not rank then return false, "Rank doesn't exist" end
+	-- if not caller:CheckUserGroupLevel(ply:GetUserGroup()) then return false, "Can't target players with a higher or similar rank than yours" end
+	if not caller:CheckUserGroupLevel(rank.name) then return false, "Can't rank players to a higher or similar rank than yours" end
+
+	ply:SetUserGroup(rank.name)
+	mingeban.utils.print(mingeban.colors.Cyan, tostring(caller) .. " ranked " .. tostring(ply) .. " to '" .. rank.name .. "'.")
 end)
 rank:AddArgument(ARGTYPE_PLAYER)
 rank:AddArgument(ARGTYPE_STRING)
 	:SetName("rank")
+rank:SetArgRankCheck(true)
 
 -- map / restart
 
