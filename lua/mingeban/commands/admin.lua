@@ -185,6 +185,19 @@ local fire = mingeban.CreateCommand("fire", function(caller, line)
 end)
 fire:SetAllowConsole(false)
 
+-- freeze / unfreeze
+-- maybe should add a print?
+local freeze = mingeban.CreateCommand("freeze", function(caller, line, ply)
+	ply:Freeze(true)
+end)
+freeze:AddArgument(ARGTYPE_PLAYER)
+
+
+local unfreeze = mingeban.CreateCommand("unfreeze", function(caller, line, ply)
+	ply:Freeze(false)
+end)
+unfreeze:AddArgument(ARGTYPE_PLAYER)
+
 -- ban / unban
 
 local function calcTime(time)
