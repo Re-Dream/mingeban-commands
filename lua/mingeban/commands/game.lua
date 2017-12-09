@@ -90,6 +90,20 @@ if SERVER then
 		local svfps = math.ceil(engine.ServerFPS())
 		ChatAddText(col, ply:Nick(), "'s FPS: ", fps, ", server: ", svfps)
 	end)
+	
+	local giveammo = mingeban.CreateCommand('giveammo', function(ply, line, amount)
+		local wep = ply:GetActiveWeapon()
+	
+		if not IsValid(wep) then return end
+	
+		if wep.GetPrimaryAmmoType then
+			ply:GiveAmmo(amount, wep:GetPrimaryAmmoType())
+		elseif wep.GetSecondaryAmmoType then
+			ply:GiveAmmo(amount, wep:GetSecondaryAmmoType())
+		end
+	end)
+	a:AddArgument(ARGTYPE_NUMBER):SetName('amount')
+	a:SetAllowConsole(false)
 elseif CLIENT then
 	local function rand(i)
 		return util.SharedRandom(i, -1, 1)
