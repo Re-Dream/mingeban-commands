@@ -56,6 +56,11 @@ if SERVER then
 	end)
 	maps:SetAllowConsole(false)
 
+	local noclip = mingeban.CreateCommand("noclip", function(caller)
+		caller:ConCommand("noclip")
+	end)
+	noclip:SetAllowConsole(false)
+
 	-- TODO: better clientside command system
 
 	util.AddNetworkString("mingeban_command_tool")
