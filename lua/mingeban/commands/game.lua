@@ -97,16 +97,16 @@ if SERVER then
 	end)
 	
 	local giveammo = mingeban.CreateCommand("giveammo", function(caller, line, amount)
-		local wep = ply:GetActiveWeapon()
+		local wep = caller:GetActiveWeapon()
 	
 		if not IsValid(wep) then return end
 	
 		if wep:GetPrimaryAmmoType() ~= -1 then
-			ply:GiveAmmo(amount, wep:GetPrimaryAmmoType())
+			caller:GiveAmmo(amount, wep:GetPrimaryAmmoType())
 		end
 	
 		if wep:GetSecondaryAmmoType() ~= -1 then
-			ply:GiveAmmo(amount, wep:GetSecondaryAmmoType())
+			caller:GiveAmmo(amount, wep:GetSecondaryAmmoType())
 		end
 	end)
 	giveammo:AddArgument(ARGTYPE_NUMBER):SetName("amount")
