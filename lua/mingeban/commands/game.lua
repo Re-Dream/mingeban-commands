@@ -109,7 +109,8 @@ if SERVER then
 			caller:GiveAmmo(amount, wep:GetSecondaryAmmoType())
 		end
 	end)
-	giveammo:AddArgument(ARGTYPE_NUMBER):SetName("amount")
+	giveammo:AddArgument(ARGTYPE_NUMBER)
+		:SetName("amount")
 	giveammo:SetAllowConsole(false)
 elseif CLIENT then
 	local function rand(i)
