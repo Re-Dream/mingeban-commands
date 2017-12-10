@@ -336,7 +336,7 @@ if banni then
 			" with reason: '" .. reason ..
 			"'."
 		)
-		banni.unban(caller:SteamID(), type(ply) == "string" and ply or ply:SteamID(), reason)
+		banni.unban(IsValid(caller) and caller:SteamID() or caller, type(ply) == "string" and ply or ply:SteamID(), reason)
 	end)
 	unbbaann:AddArgument(ARGTYPE_STRING)
 		:SetName("player/steamid")
