@@ -95,16 +95,16 @@ if SERVER then
 		local svfps = math.ceil(engine.ServerFPS())
 		ChatAddText(col, ply:Nick(), "'s FPS: ", fps, ", server: ", svfps)
 	end)
-	
+
 	local giveammo = mingeban.CreateCommand("giveammo", function(caller, line, amount)
 		local wep = caller:GetActiveWeapon()
-	
+
 		if not IsValid(wep) then return end
-	
+
 		if wep:GetPrimaryAmmoType() ~= -1 then
 			caller:GiveAmmo(amount, wep:GetPrimaryAmmoType())
 		end
-	
+
 		if wep:GetSecondaryAmmoType() ~= -1 then
 			caller:GiveAmmo(amount, wep:GetSecondaryAmmoType())
 		end
@@ -127,7 +127,7 @@ elseif CLIENT then
 		local vel = ply:GetAimVector() * maxVel
 		local angVel = Vector(rand(time .. "_x") * maxAngVel, rand(time .. "_y") * maxAngVel, rand(time .. "_z") * maxAngVel)
 
-		local hookId = "_" .. ply:EntIndex() .. "_ragdoll"
+		local hookId = "_" .. ply:EntIndex() .. "_kill_ragdoll"
 		hook.Add("OnEntityCreated", hookId, function(ent)
 			if ent:GetClass() == "class C_HL2MPRagdoll" then
 				local rag = ply:GetRagdollEntity()
