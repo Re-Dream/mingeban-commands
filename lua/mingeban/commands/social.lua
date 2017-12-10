@@ -1,5 +1,5 @@
 if SERVER then
-	util.AddNetworkString("mingeban_ytplay")
+	util.AddNetworkString("mingeban_command_ytplay")
 
 	local ytplay = mingeban.CreateCommand("ytplay", function(ply, line)
 		local query = line
@@ -62,12 +62,20 @@ if SERVER then
 	ytplay:AddArgument(ARGTYPE_STRING)
 		:SetName("url")
 else
-	net.Receive("mingeban_ytplay", function()
+	net.Receive("mingeban_command_ytplay", function()
 		local url = net.ReadString()
 
 		local mp = table.GetFirstValue(MP.List)
 		if mp then
 			local result = MP.Request(mp, url)
+		end
+	end)
+
+	hook.Add("OnPlayerChat", "mingeban_command_me", function(caller, line)
+		local me = line:Trim():match("^%*(.*)%*$")
+		if me then
+			chat.AddText(Color(160, 170, 220), "* ", caller, Color(160, 170, 220), " ", me:Trim(), ".")
+			return true
 		end
 	end)
 end
@@ -94,4 +102,10 @@ mingeban.CreateCommand("github", doLinkOpenFunc("https://github.com/Re-Dream")):
 mingeban.CreateCommand("collection", doLinkOpenFunc("http://steamcommunity.com/sharedfiles/filedetails/?id=880121123")):SetAllowConsole(false)
 mingeban.CreateCommand("website", doLinkOpenFunc("https://gmlounge.us/redream")):SetAllowConsole(false)
 mingeban.CreateCommand("motd", doLinkOpenFunc("https://gmlounge.us/redream/loading")):SetAllowConsole(false)
+
+local me = mingeban.CreateCommand("me", function(caller, line)
+	ChatAddText(Color(160, 170, 220), "* ", caller, Color(160, 170, 220), " ", line, ".")
+end)
+me:SetHideChat(true)
+me:SetAllowConsole(false)
 
