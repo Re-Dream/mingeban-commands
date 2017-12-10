@@ -67,8 +67,22 @@ if SERVER then
 	
 		local colors = {Color(64, 255, 64), Color(255, 255, 64), Color(255, 64, 64)}
 		local data = GeoIP.Get(ply:IPAddress():Split(':')[1])
-	
-		ChatAddText(colors[math.random(#colors)], ply:Name(), " is located in ", data.country_name, " (requested by ", caller:Name(), ")")
+		local output
+		local whatshouldicallthis
+		
+		if data.city then
+			output = data.city .. ", " .. data.country_name
+		else
+			output = data.country_name
+		end
+		
+		if ply == caller then
+			whatshouldicallthis = ""
+		else
+			whatshouldicallthis = " (requested by " .. caller:Name() .. ")"
+		end
+		
+		ChatAddText(colors[math.random(#colors)], ply:Name(), " is located in ", output, whatshouldicallthis)
 	end)
 	geoip:SetAllowConsole(false)
 	geoip:SetHideChat(true)
