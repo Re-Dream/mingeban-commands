@@ -67,8 +67,8 @@ if SERVER then
 	
 		local colors = {Color(64, 255, 64), Color(255, 255, 64), Color(255, 64, 64)}
 		local data = GeoIP.Get(ply:IPAddress():Split(':')[1])
+		local whatshouldicallthis = ""
 		local output
-		local whatshouldicallthis
 		
 		if data.city then
 			output = data.city .. ", " .. data.country_name
@@ -76,9 +76,7 @@ if SERVER then
 			output = data.country_name
 		end
 		
-		if ply == caller then
-			whatshouldicallthis = ""
-		else
+		if ply ~= caller then
 			whatshouldicallthis = " (requested by " .. caller:Name() .. ")"
 		end
 		
