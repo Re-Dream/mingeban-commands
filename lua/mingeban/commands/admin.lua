@@ -101,6 +101,19 @@ resetmap:AddArgument(ARGTYPE_NUMBER)
 	:SetOptional(true)
 
 local clean = mingeban.CreateCommand({"clean", "cleanup"}, function(caller, line, plys)
+	if prostasia and line:Trim():lower() == "#disconnected" then
+		for sid in next, prostasia.Disconnected do
+			prostasia.Disconnected[sid] = 0
+		end
+		mingeban.utils.print(mingeban.colors.Cyan, tostring(caller) .. " cleaned up stuff from disconnected players.")
+		return
+	end
+
+	local plys = mingeban.utils.findPlayer(plys)
+	if #plys < 1 then
+		return false, "Couldn't find any players."
+	end
+
 	local plyName
 	if #plys < 2 then
 		plys[1]:ConCommand("gmod_cleanup")
@@ -115,7 +128,7 @@ local clean = mingeban.CreateCommand({"clean", "cleanup"}, function(caller, line
 	local str = istable(plyName) and "{" .. table.concat(plyName, ", ") .. "}" or plyName
 	mingeban.utils.print(mingeban.colors.Cyan, tostring(caller) .. " cleaned up stuff from \"" .. str .. "\"")
 end)
-clean:AddArgument(ARGTYPE_PLAYERS)
+clean:AddArgument(ARGTYPE_STRING)
 
 local PLAYER = FindMetaTable("Player")
 
