@@ -1,5 +1,5 @@
 if SERVER then
-	util.AddNetworkString("mingeban_ytplay")
+	util.AddNetworkString("mingeban_command_ytplay")
 
 	local ytplay = mingeban.CreateCommand("ytplay", function(ply, line)
 		local query = line
@@ -61,13 +61,45 @@ if SERVER then
 	ytplay:SetAllowConsole(false)
 	ytplay:AddArgument(ARGTYPE_STRING)
 		:SetName("url")
+	
+	local geoip = mingeban.CreateCommand({"geoip", "geo", "loc"}, function(caller, line, ply)
+		if not GeoIP then pcall(require, "GeoIP") end
+	
+		local colors = {Color(64, 255, 64), Color(255, 255, 64), Color(255, 64, 64)}
+		local data = GeoIP.Get(ply:IPAddress():Split(':')[1])
+		local whatshouldicallthis = ""
+		local output
+		
+		if data.city then
+			output = data.city .. ", " .. data.country_name
+		else
+			output = data.country_name
+		end
+		
+		if ply ~= caller then
+			whatshouldicallthis = " (requested by " .. caller:Name() .. ")"
+		end
+		
+		ChatAddText(colors[math.random(#colors)], ply:Name(), " is located in ", output, whatshouldicallthis)
+	end)
+	geoip:SetAllowConsole(false)
+	geoip:SetHideChat(true)
+	geoip:AddArgument(ARGTYPE_PLAYER)
 else
-	net.Receive("mingeban_ytplay", function()
+	net.Receive("mingeban_command_ytplay", function()
 		local url = net.ReadString()
 
 		local mp = table.GetFirstValue(MP.List)
 		if mp then
 			local result = MP.Request(mp, url)
+		end
+	end)
+
+	hook.Add("OnPlayerChat", "mingeban_command_me", function(caller, line)
+		local me = line:Trim():match("^%*(.*)%*$")
+		if me then
+			chat.AddText(Color(160, 170, 220), "* ", caller, Color(160, 170, 220), " ", me:Trim(), ".")
+			return true
 		end
 	end)
 end
@@ -94,4 +126,10 @@ mingeban.CreateCommand("github", doLinkOpenFunc("https://github.com/Re-Dream")):
 mingeban.CreateCommand("collection", doLinkOpenFunc("http://steamcommunity.com/sharedfiles/filedetails/?id=880121123")):SetAllowConsole(false)
 mingeban.CreateCommand("website", doLinkOpenFunc("https://gmlounge.us/redream")):SetAllowConsole(false)
 mingeban.CreateCommand("motd", doLinkOpenFunc("https://gmlounge.us/redream/loading")):SetAllowConsole(false)
+
+local me = mingeban.CreateCommand("me", function(caller, line)
+	ChatAddText(Color(160, 170, 220), "* ", caller, Color(160, 170, 220), " ", line, ".")
+end)
+me:SetHideChat(true)
+me:SetAllowConsole(false)
 

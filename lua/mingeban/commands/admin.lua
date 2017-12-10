@@ -58,7 +58,7 @@ local restart = mingeban.CreateCommand("restart", function(caller, line, time)
 	local txt = "Restart"
 	mingeban.Countdown(time or 20, function()
 		timer.Simple(1, function()
-			hook.Run("ShutDown")
+			-- hook.Run("ShutDown") -- isn't this unnecessary?
 			game.ConsoleCommand("changelevel " .. game.GetMap() .. "\n")
 		end)
 	end, txt)
@@ -75,7 +75,7 @@ local map = mingeban.CreateCommand("map", function(caller, line, map, time)
 	local txt = "Changing map to \"" .. map .. "\""
 	mingeban.Countdown(time or 20, function()
 		timer.Simple(1, function()
-			hook.Run("ShutDown")
+			-- hook.Run("ShutDown") -- isn't this unnecessary?
 			game.ConsoleCommand("changelevel " .. map .. "\n")
 		end)
 	end, txt)
@@ -101,6 +101,19 @@ resetmap:AddArgument(ARGTYPE_NUMBER)
 	:SetOptional(true)
 
 local clean = mingeban.CreateCommand({"clean", "cleanup"}, function(caller, line, plys)
+	if prostasia and line:Trim():lower() == "#disconnected" then
+		for sid in next, prostasia.Disconnected do
+			prostasia.Disconnected[sid] = 0
+		end
+		mingeban.utils.print(mingeban.colors.Cyan, tostring(caller) .. " cleaned up stuff from disconnected players.")
+		return
+	end
+
+	local plys = mingeban.utils.findPlayer(plys)
+	if #plys < 1 then
+		return false, "Couldn't find any players."
+	end
+
 	local plyName
 	if #plys < 2 then
 		plys[1]:ConCommand("gmod_cleanup")
@@ -115,7 +128,7 @@ local clean = mingeban.CreateCommand({"clean", "cleanup"}, function(caller, line
 	local str = istable(plyName) and "{" .. table.concat(plyName, ", ") .. "}" or plyName
 	mingeban.utils.print(mingeban.colors.Cyan, tostring(caller) .. " cleaned up stuff from \"" .. str .. "\"")
 end)
-clean:AddArgument(ARGTYPE_PLAYERS)
+clean:AddArgument(ARGTYPE_STRING)
 
 local PLAYER = FindMetaTable("Player")
 
@@ -184,6 +197,19 @@ local fire = mingeban.CreateCommand("fire", function(caller, line)
 	end
 end)
 fire:SetAllowConsole(false)
+
+-- freeze / unfreeze
+-- maybe should add a print?
+local freeze = mingeban.CreateCommand("freeze", function(caller, line, ply)
+	ply:Freeze(true)
+end)
+freeze:AddArgument(ARGTYPE_PLAYER)
+
+
+local unfreeze = mingeban.CreateCommand("unfreeze", function(caller, line, ply)
+	ply:Freeze(false)
+end)
+unfreeze:AddArgument(ARGTYPE_PLAYER)
 
 -- ban / unban
 
@@ -284,6 +310,7 @@ if banni then
 		end
 
 		local reason = reason or "No reason specified"
+
 		mingeban.utils.print(mingeban.colors.Red,
 			tostring(ply) .. (foundPlayer and " (" .. ply:SteamID() .. ")" or "") ..
 			" has been banni'd " ..
@@ -292,7 +319,7 @@ if banni then
 			" for reason: '" .. reason ..
 			"'."
 		)
-		banni.ban(caller:SteamID(), type(ply) == "string" and ply or ply:SteamID(), timeNum, reason)
+		banni.ban(IsValid(caller) and caller:SteamID() or caller, type(ply) == "string" and ply or ply:SteamID(), timeNum, reason)
 	end)
 	bbaann:AddArgument(ARGTYPE_STRING)
 		:SetName("player/steamid")
@@ -302,7 +329,7 @@ if banni then
 		:SetName("reason")
 		:SetOptional(true)
 
-	local unbbaann = mingeban.CreateCommand("unbanni", function(caller,line,ply,reason)
+	local unbbaann = mingeban.CreateCommand("unbanni", function(caller, line, ply, reason)
 		local foundPlayer = false
 		if not mingeban.utils.validSteamID(ply) then
 			local results = mingeban.utils.findPlayer(ply)
@@ -323,7 +350,7 @@ if banni then
 			" with reason: '" .. reason ..
 			"'."
 		)
-		banni.unban(caller:SteamID(), type(ply) == "string" and ply or ply:SteamID(), reason)
+		banni.unban(IsValid(caller) and caller:SteamID() or caller, type(ply) == "string" and ply or ply:SteamID(), reason)
 	end)
 	unbbaann:AddArgument(ARGTYPE_STRING)
 		:SetName("player/steamid")
