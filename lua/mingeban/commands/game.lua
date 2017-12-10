@@ -33,6 +33,7 @@ if SERVER then
 		caller:SetEyeAngles(oldAng)
 	end)
 	revive:SetAllowConsole(false)
+	revive:SetHideChat(true)
 
 	local cmd = mingeban.CreateCommand("cmd", function(caller, line)
 		caller:SendLua(string.format("LocalPlayer():ConCommand(%q)", line))
@@ -109,9 +110,24 @@ if SERVER then
 			caller:GiveAmmo(amount, wep:GetSecondaryAmmoType())
 		end
 	end)
+	giveammo:SetAllowConsole(false)
 	giveammo:AddArgument(ARGTYPE_NUMBER)
 		:SetName("amount")
-	giveammo:SetAllowConsole(false)
+
+	local exit = mingeban.CreateCommand({"exit", "quit"}, function(caller, line, ply, reason)
+		if ply ~= caller and not caller:IsAdmin() then return false, "you can only exit other players if you are an admin" end
+		if ply:IsBot() then ply:Kick(reason or "byebye!!") return end
+	
+		ply:SendLua[[RunConsoleCommand("gamemenucommand", "quit")]]
+		timer.Simple(1, function()
+			ply:Kick(reason or "Disconnected by user.")
+		end)
+	end)
+	local reason = exit:AddArgument(ARGTYPE_STRING)
+	exit:SetAllowConsole(false)
+	exit:AddArgument(ARGTYPE_PLAYER)
+	reason:SetName('reason')
+	reason:SetOptional(true)
 elseif CLIENT then
 	local function rand(i)
 		return util.SharedRandom(i, -1, 1)
