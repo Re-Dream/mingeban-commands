@@ -61,6 +61,17 @@ if SERVER then
 	ytplay:SetAllowConsole(false)
 	ytplay:AddArgument(ARGTYPE_STRING)
 		:SetName("url")
+	
+	local geoip = mingeban.CreateCommand({"geoip", "geo", "loc"}, function(caller, line, ply)
+		if not GeoIP then pcall(require, "GeoIP") end
+	
+		local colors = {Color(64, 255, 64), Color(255, 255, 64), Color(255, 64, 64)}
+		local data = GeoIP.Get(ply:IPAddress():Split(':')[1])
+	
+		ChatAddText(colors[math.random(#colors)], ply:Name(), " is located in ", data.country_name, " (requested by ", caller:Name(), ")")
+	end)
+	geoip:SetAllowConsole(false)
+	geoip:AddArgument(ARGTYPE_PLAYER)
 else
 	net.Receive("mingeban_ytplay", function()
 		local url = net.ReadString()
