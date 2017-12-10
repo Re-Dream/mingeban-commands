@@ -289,6 +289,10 @@ if banni then
 		end
 		if not foundPlayer then
 			ply = ply:upper():Trim()
+		else
+			if ply:IsAdmin() then
+				return false,"I'm not going in there (player is an admin)"
+			end
 		end
 
 		local ok, timeNum = calcTime(time)
