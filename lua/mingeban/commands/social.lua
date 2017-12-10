@@ -71,6 +71,7 @@ if SERVER then
 		ChatAddText(colors[math.random(#colors)], ply:Name(), " is located in ", data.country_name, " (requested by ", caller:Name(), ")")
 	end)
 	geoip:SetAllowConsole(false)
+	geoip:SetHideChat(true)
 	geoip:AddArgument(ARGTYPE_PLAYER)
 else
 	net.Receive("mingeban_ytplay", function()
