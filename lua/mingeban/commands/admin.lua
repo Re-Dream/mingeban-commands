@@ -297,9 +297,6 @@ if banni then
 		end
 
 		local reason = reason or "No reason specified"
-			
-		local bannedpersona = type(ply) == "string" and ply or (ply.SteamID ~= nil and ply:SteamID() or tostring(ply))
-		
 		mingeban.utils.print(mingeban.colors.Red,
 			tostring(ply) .. (foundPlayer and " (" .. ply:SteamID() .. ")" or "") ..
 			" has been banni'd " ..
@@ -308,7 +305,7 @@ if banni then
 			" for reason: '" .. reason ..
 			"'."
 		)
-		banni.ban(IsValid(caller) and caller:SteamID() or caller, bannedpersona, timeNum, reason)
+		banni.ban(IsValid(caller) and caller:SteamID() or caller, type(ply) == "string" and ply or ply:SteamID(), timeNum, reason)
 	end)
 	bbaann:AddArgument(ARGTYPE_STRING)
 		:SetName("player/steamid")
