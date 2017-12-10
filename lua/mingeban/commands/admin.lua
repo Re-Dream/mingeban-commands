@@ -58,7 +58,7 @@ local restart = mingeban.CreateCommand("restart", function(caller, line, time)
 	local txt = "Restart"
 	mingeban.Countdown(time or 20, function()
 		timer.Simple(1, function()
-			hook.Run("ShutDown")
+			-- hook.Run("ShutDown") -- isn't this unnecessary?
 			game.ConsoleCommand("changelevel " .. game.GetMap() .. "\n")
 		end)
 	end, txt)
@@ -75,7 +75,7 @@ local map = mingeban.CreateCommand("map", function(caller, line, map, time)
 	local txt = "Changing map to \"" .. map .. "\""
 	mingeban.Countdown(time or 20, function()
 		timer.Simple(1, function()
-			hook.Run("ShutDown")
+			-- hook.Run("ShutDown") -- isn't this unnecessary?
 			game.ConsoleCommand("changelevel " .. map .. "\n")
 		end)
 	end, txt)
@@ -289,10 +289,6 @@ if banni then
 		end
 		if not foundPlayer then
 			ply = ply:upper():Trim()
-		else
-			if ply:IsAdmin() then
-				return false,"I'm not going in there (player is an admin)"
-			end
 		end
 
 		local ok, timeNum = calcTime(time)
@@ -309,7 +305,7 @@ if banni then
 			" for reason: '" .. reason ..
 			"'."
 		)
-		banni.ban(caller:SteamID(), type(ply) == "string" and ply or ply:SteamID(), timeNum, reason)
+		banni.ban(IsValid(caller) and caller:SteamID() or caller, type(ply) == "string" and ply or ply:SteamID(), timeNum, reason)
 	end)
 	bbaann:AddArgument(ARGTYPE_STRING)
 		:SetName("player/steamid")
