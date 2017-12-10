@@ -306,7 +306,7 @@ if banni then
 			" for reason: '" .. reason ..
 			"'."
 		)
-		banni.ban(IsValid(caller) and caller:SteamID() or caller, type(ply) == "string" and ply or ply:SteamID(), reason)
+		banni.ban(IsValid(caller) and caller:SteamID() or caller, type(ply) == "string" and ply or ply:SteamID(), timeNum, reason)
 	end)
 	bbaann:AddArgument(ARGTYPE_STRING)
 		:SetName("player/steamid")
@@ -316,7 +316,7 @@ if banni then
 		:SetName("reason")
 		:SetOptional(true)
 
-	local unbbaann = mingeban.CreateCommand("unbanni", function(caller,line,ply,reason)
+	local unbbaann = mingeban.CreateCommand("unbanni", function(caller, line, ply, reason)
 		local foundPlayer = false
 		if not mingeban.utils.validSteamID(ply) then
 			local results = mingeban.utils.findPlayer(ply)
