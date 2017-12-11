@@ -128,6 +128,56 @@ if SERVER then
 	exit:AddArgument(ARGTYPE_PLAYER)
 	reason:SetName('reason')
 	reason:SetOptional(true)
+
+	local META = FindMetaTable('Player')
+	META.PacIgnored = false
+
+	util.AddNetworkString("mingeban_command_ignorepac")
+	local ignorepac = mingeban.CreateCommand("ignorepac", function(caller, line, ply)
+		net.Start("ignorepac")
+		net.WriteEntity(ply)
+		net.Send(caller)
+	end)
+	ignorepac:SetHideChat(true)
+	ignorepac:AddArgument(ARGTYPE_PLAYER)
+
+	local validweathers = {}
+	for _, weather in pairs(StormFox.GetWeathers()) do
+		validweathers[weather] = true
+	end
+
+	local weather = mingeban.CreateCommand("weather", function(caller, line, weather, intensity)
+		if not StormFox then return false, "what the fuck happened to StormFox?" end
+
+		if validweathers[weather:lower()] then
+			StormFox.SetWeather(weather, intensity or 1)
+		else
+			local weathersStr = table.ToString(validweathers)
+			local weathersStr = string.Replace(weathersStr, '=true,', ', ')
+			return false, "invalid weather type (valid types: " .. weathersStr .. ")"
+		end
+	end)
+	weather:AddArgument(ARGTYPE_STRING)
+	weather:AddArgument(ARGTYPE_NUMBER)
+		:SetOptional(true)
+	mingeban.GetRank("admin"):AddPermission("command.weather")
+
+	local time = mingeban.CreateCommand("time", function(caller, line, time)
+		if not StormFox then return false, "what the fuck happened to StormFox?" end
+		if time > 24 or time < 0 then return false, "invalid time" end
+
+		StormFox.SetTime(time*60)
+	end)
+	time:AddArgument(ARGTYPE_NUMBER)
+	mingeban.GetRank("admin"):AddPermission("command.time")
+	
+	local temperature = mingeban.CreateCommand("temperature", function(caller, line, tempareture)
+		if not StormFox then return false, "what the fuck happened to StormFox?" end
+        
+        StormFox.SetNetworkData("Temperature", temperature)
+	end)
+	temperature:AddArgument(ARGTYPE_NUMBER)
+	mingeban.GetRank("admin"):AddPermission("command.temperature")
 elseif CLIENT then
 	local function rand(i)
 		return util.SharedRandom(i, -1, 1)
@@ -198,5 +248,20 @@ elseif CLIENT then
 			net.WriteFloat(1 / FrameTime())
 		net.SendToServer()
 	end)
+
+	net.Receive("mingeban_command_ignorepac", function()
+		local ply = net.ReadEntity()
+		if ply.PacIgnored == nil then ply.PacIgnored = false end
+		if not ply.PacIgnored then
+			chat.AddText(Color(208, 135, 112), "Ignoring pac of ", Color(163, 190, 140), ply:Name(), ".") 
+			pac.IgnoreEntity(ply)
+			ply.PacIgnored = true
+		else
+			chat.AddText(Color(208, 135, 112), "Unignoring pac of ", Color(163, 190, 140), ply:Name(), ".") 
+			pac.UnIgnoreEntity(ply)
+			ply.PacIgnored = false	
+		end
+	end)
+
 end
 
