@@ -123,10 +123,10 @@ if SERVER then
 			ply:Kick(reason or "Disconnected by user.")
 		end)
 	end)
+	exit:AddArgument(ARGTYPE_PLAYER)
 	exit:AddArgument(ARGTYPE_STRING)
 		:SetOptional(true)
 		:SetName("reason")
-	exit:AddArgument(ARGTYPE_PLAYER)
 	exit:SetAllowConsole(false)
 
 	local PLAYER = FindMetaTable("Player")
