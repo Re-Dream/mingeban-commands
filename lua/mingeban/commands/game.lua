@@ -119,7 +119,7 @@ if SERVER then
 		if ply:IsBot() then ply:Kick(reason or "byebye!!") return end
 
 		ply:SendLua[[RunConsoleCommand("gamemenucommand", "quit")]]
-		timer.Simple(1, function()
+		timer.Simple(0.4, function()
 			ply:Kick(reason or "Disconnected by user.")
 		end)
 	end)
