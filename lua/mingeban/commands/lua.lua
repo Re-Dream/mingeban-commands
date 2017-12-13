@@ -51,6 +51,12 @@ mingeban.CreateCommand("glua", function(caller, line)
 
 	caller:OpenURL("https://samuelmaddock.github.io/glua-docs/#?q=" .. urlencode(line))
 end)
+mingeban.CreateCommand("gwiki", function(caller, line)
+	local urlencode = url and url.escape or string.urlencode
+	if not urlencode then return false, "no url encode function" end
+
+	caller:OpenURL("http://wiki.garrysmod.com/page/Special:Search?search=" .. urlencode(line) .. "&fulltext=Search")
+end)
 
 mingeban.commands.pm = mingeban.commands.pm2
 
