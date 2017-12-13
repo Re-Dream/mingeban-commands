@@ -99,6 +99,7 @@ if SERVER then
 
 	local giveammo = mingeban.CreateCommand("giveammo", function(caller, line, amount)
 		local wep = caller:GetActiveWeapon()
+		amount = amount or 500
 
 		if not IsValid(wep) then return end
 
@@ -113,6 +114,7 @@ if SERVER then
 	giveammo:SetAllowConsole(false)
 	giveammo:AddArgument(ARGTYPE_NUMBER)
 		:SetName("amount")
+		:SetOptional(true)
 
 	local exit = mingeban.CreateCommand({"exit", "quit"}, function(caller, line, ply, reason)
 		if ply ~= caller and not caller:IsAdmin() then return false, "you can only exit other players if you are an admin" end
