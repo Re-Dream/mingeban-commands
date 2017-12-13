@@ -359,6 +359,16 @@ if banni then
 		:SetOptional(true)
 end
 
+local ok = pcall(require, "cvarsx")
+if ok then
+	local cheats = mingeban.CreateCommand("cheats", function(caller, line, b)
+		caller:SetConVarValue("sv_cheats", b and "1" or "0")
+		caller:SendLua([[surface.PlaySound("common/warning.wav")]]) -- lazy
+		caller:Notify("sv_cheats turned " .. (b and "on" or "off") .. ".", NOTIFY_HINT, 5)
+	end)
+	cheats:AddArgument(ARGTYPE_BOOLEAN)
+end
+
 --[[ server stays dead with _restart rip
 
 mingeban.CreateCommand("reboot",function(caller)
