@@ -45,8 +45,11 @@ mingeban.CreateCommand("lmfind", function(caller, line)
 	caller:ConCommand("lua_find_cl " .. line)
 end)
 
-mingeban.CreateCommand('glua', function(caller, line)
-	caller:OpenURL('https://samuelmaddock.github.io/glua-docs/#?q=' .. url.escape(line))
+mingeban.CreateCommand("glua", function(caller, line)
+	local urlencode = url and url.escape or string.urlencode
+	if not urlencode then return false, "no url encode function" end
+
+	caller:OpenURL("https://samuelmaddock.github.io/glua-docs/#?q=" .. urlencode(line))
 end)
 
 mingeban.commands.pm = mingeban.commands.pm2
