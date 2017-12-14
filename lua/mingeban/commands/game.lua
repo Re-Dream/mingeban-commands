@@ -142,40 +142,38 @@ if SERVER then
 	ignorepac:AddArgument(ARGTYPE_PLAYER)
 	ignorepac:SetHideChat(true)
 
-	local validWeathers = {}
-	for _, weather in pairs(StormFox.GetWeathers()) do
-		validWeathers[weather] = true
-	end
+	hook.Add("Initialize", "mingeban_command_stormfox", function()
+		if not StormFox then return end
 
-	local weather = mingeban.CreateCommand("weather", function(caller, line, weather, intensity)
-		if not StormFox then return false, "what the fuck happened to StormFox?" end
-
-		if validWeathers[weather:lower()] then
-			StormFox.SetWeather(weather, intensity or 1)
-		else
-			local weathersStr = table.concat(table.GetKeys(), ", ")
-			return false, "invalid weather type (valid types: " .. weathersStr .. ")"
+		local validWeathers = {}
+		for _, weather in pairs(StormFox.GetWeathers()) do
+			validWeathers[weather] = true
 		end
+
+		local weather = mingeban.CreateCommand("weather", function(caller, line, weather, intensity)
+			if validWeathers[weather:lower()] then
+				StormFox.SetWeather(weather, intensity or 1)
+			else
+				local weathersStr = table.concat(table.GetKeys(), ", ")
+				return false, "invalid weather type (valid types: " .. weathersStr .. ")"
+			end
+		end)
+		weather:AddArgument(ARGTYPE_STRING)
+		weather:AddArgument(ARGTYPE_NUMBER)
+			:SetOptional(true)
+
+		local time = mingeban.CreateCommand("time", function(caller, line, time)
+			if time > 24 or time < 0 then return false, "invalid time" end
+
+			StormFox.SetTime(time * 60)
+		end)
+		time:AddArgument(ARGTYPE_NUMBER)
+
+		local temperature = mingeban.CreateCommand("temperature", function(caller, line, tempareture)
+			StormFox.SetNetworkData("Temperature", temperature)
+		end)
+		temperature:AddArgument(ARGTYPE_NUMBER)
 	end)
-	weather:AddArgument(ARGTYPE_STRING)
-	weather:AddArgument(ARGTYPE_NUMBER)
-		:SetOptional(true)
-
-	local time = mingeban.CreateCommand("time", function(caller, line, time)
-		if not StormFox then return false, "what the fuck happened to StormFox?" end
-		if time > 24 or time < 0 then return false, "invalid time" end
-
-		StormFox.SetTime(time * 60)
-	end)
-	time:AddArgument(ARGTYPE_NUMBER)
-
-	local temperature = mingeban.CreateCommand("temperature", function(caller, line, tempareture)
-		if not StormFox then return false, "what the fuck happened to StormFox?" end
-
-        StormFox.SetNetworkData("Temperature", temperature)
-	end)
-	temperature:AddArgument(ARGTYPE_NUMBER)
-
 elseif CLIENT then
 	local function rand(i)
 		return util.SharedRandom(i, -1, 1)
