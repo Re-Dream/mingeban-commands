@@ -122,7 +122,7 @@ if SERVER then
 
 		ply:SendLua[[RunConsoleCommand("gamemenucommand", "quit")]]
 		timer.Simple(0.4, function()
-			ply:Kick(reason or "Disconnected by user.")
+			ply:Kick(reason:Trim() or "Disconnected by user.")
 		end)
 	end)
 	exit:AddArgument(ARGTYPE_PLAYER)
