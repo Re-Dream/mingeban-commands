@@ -135,7 +135,7 @@ if SERVER then
 
 	util.AddNetworkString("mingeban_command_ignorepac")
 	local ignorepac = mingeban.CreateCommand("ignorepac", function(caller, line, ply)
-		net.Start("ignorepac")
+		net.Start("mingeban_command_ignorepac")
 			net.WriteEntity(ply)
 		net.Send(caller)
 	end)
