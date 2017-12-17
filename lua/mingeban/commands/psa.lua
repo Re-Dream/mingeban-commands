@@ -2,11 +2,12 @@
 if SERVER then
 	util.AddNetworkString("mingeban_command_psa")
 
-	local psa = mingeban.CreateCommand("psa", function(caller, line)
+	local psa = mingeban.CreateCommand("psa", function(caller, line, msg)
 		net.Start("mingeban_command_psa")
 			net.WriteString(msg)
 		net.Broadcast()
 	end)
+	psa:AddArgument(ARGTYPE_STRING)
 	psa:SetHideChat(true)
 end
 
