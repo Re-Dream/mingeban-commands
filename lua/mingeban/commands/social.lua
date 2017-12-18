@@ -12,7 +12,7 @@ if SERVER then
 
 			url = string.Replace(url, "youtu.be/", "www.youtube.com/watch?v=")
 
-			net.Start("mingeban_ytplay")
+			net.Start("mingeban_command_ytplay")
 				net.WriteString(url)
 			net.Send(ply)
 			return
