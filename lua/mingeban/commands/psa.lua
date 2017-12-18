@@ -4,7 +4,7 @@ if SERVER then
 
 	local psa = mingeban.CreateCommand("psa", function(caller, line)
 		net.Start("mingeban_command_psa")
-			net.WriteString(msg)
+			net.WriteString(line)
 		net.Broadcast()
 	end)
 	psa:SetHideChat(true)
