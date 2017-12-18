@@ -2,7 +2,7 @@
 if SERVER then
 	util.AddNetworkString("mingeban_command_psa")
 
-	local psa = mingeban.CreateCommand("psa", function(caller, line)
+	local psa = mingeban.CreateCommand("psa", function(caller, msg)
 		net.Start("mingeban_command_psa")
 			net.WriteString(line)
 		net.Broadcast()
