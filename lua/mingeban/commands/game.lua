@@ -119,8 +119,7 @@ if SERVER then
 	local exit = mingeban.CreateCommand({"exit", "quit"}, function(caller, line, ply, reason)
 		if ply ~= caller and not caller:IsAdmin() then return false, "you can only exit other players if you are an admin" end
 		if ply:IsBot() then ply:Kick(reason or "byebye!!") return end
-		if ply:IsAdmin() and ply ~= caller then return false, "i think i ate something bad" end
-		
+
 		ply:SendLua[[RunConsoleCommand("gamemenucommand", "quit")]]
 		timer.Simple(0.24, function()
 			ply:Kick(reason:Trim() or "Disconnected by user.")
