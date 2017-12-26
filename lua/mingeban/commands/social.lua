@@ -45,7 +45,7 @@ if SERVER then
 			local id = json.items[1].id.videoId
 			if not id then ply:ChatPrint("unsuccessful") unsuccessful = true return end
 
-			net.Start("mingeban_ytplay")
+			net.Start("mingeban_command_ytplay")
 				net.WriteString("https://youtube.com/watch?v=" .. id)
 			net.Send(ply)
 		end)
