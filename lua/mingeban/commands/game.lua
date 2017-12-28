@@ -97,6 +97,12 @@ if SERVER then
 		ChatAddText(col, ply:Nick(), "'s FPS: ", fps, ", server: ", svfps)
 	end)
 
+	local decals = mingeban.CreateCommand("decals",function(caller)
+		caller:ConCommand("r_cleardecals")
+	end)
+	decals:SetAllowConsole(false)
+	decals:SetHideChat(true)
+
 	local giveammo = mingeban.CreateCommand("giveammo", function(caller, line, amount)
 		local wep = caller:GetActiveWeapon()
 		amount = amount or 500
