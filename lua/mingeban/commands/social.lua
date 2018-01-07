@@ -85,6 +85,41 @@ if SERVER then
 	geoip:SetAllowConsole(false)
 	geoip:SetHideChat(true)
 	geoip:AddArgument(ARGTYPE_PLAYER)
+	
+	local encode = url.escape or string.urlencode
+	local udapi = 'http://api.urbandictionary.com/v0/define?term='
+
+	local cooldown = 0
+	local define = mingeban.CreateCommand({'define', 'whatis', 'ud', 'urban', 'urbandictionary'}), function(caller, line)
+		if CurTime() < cooldown and not caller:IsAdmin() then
+			ChatAddText(Color(127, 159, 255), '[Urban] Command is on cooldown. (', math.floor(cooldown - CurTime()), ' seconds left.', ')')
+			return
+		end
+
+		cooldown = CurTime() + 60
+	
+		local encoded = encode(line)
+		http.Fetch(udapi .. encoded, function(body)
+			local data = util.JSONToTable(body)
+			if not data.list[1] then return end
+		
+			local result = data.list[1]
+			if result.definition:len() >= 500 or result.example:len() >= 500 then
+				ChatAddText(Color(127, 159, 255), '[Urban] Too long.')
+				return
+			end
+		
+			ChatAddText(
+				Color(127, 159, 255), '[Urban] ',
+				Color(255, 191, 0),
+				result.word, ' - ', result.permalink, ' (author: ', result.author, ')',
+				'\n', Color(63,127,127),
+				result.definition,
+				'\n\n',
+				result.example
+			)
+		end)
+	end
 else
 	net.Receive("mingeban_command_ytplay", function()
 		local url = net.ReadString()
