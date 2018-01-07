@@ -160,7 +160,7 @@ if SERVER then
 			if validWeathers[weather:lower()] then
 				StormFox.SetWeather(weather:lower(), intensity or 1)
 			else
-				local weathersStr = table.concat(validWeathers, ", ")
+				local weathersStr = table.concat(table.GetKeys(validWeathers), ", ")
 				return false, "invalid weather type (valid types: " .. weathersStr .. ")"
 			end
 		end)
