@@ -90,7 +90,7 @@ if SERVER then
 	local udapi = 'http://api.urbandictionary.com/v0/define?term='
 
 	local cooldown = 0
-	local define = mingeban.CreateCommand({'define', 'whatis', 'ud', 'urban', 'urbandictionary'}), function(caller, line)
+	local define = mingeban.CreateCommand({'define', 'whatis', 'ud', 'urban', 'urbandictionary'}, function(caller, line)
 		if CurTime() < cooldown and not caller:IsAdmin() then
 			ChatAddText(Color(127, 159, 255), '[Urban] Command is on cooldown. (', math.floor(cooldown - CurTime()), ' seconds left.', ')')
 			return
@@ -119,7 +119,7 @@ if SERVER then
 				result.example
 			)
 		end)
-	end
+	end)
 else
 	net.Receive("mingeban_command_ytplay", function()
 		local url = net.ReadString()
