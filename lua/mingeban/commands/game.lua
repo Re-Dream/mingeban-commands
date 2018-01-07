@@ -158,9 +158,9 @@ if SERVER then
 
 		local weather = mingeban.CreateCommand("weather", function(caller, line, weather, intensity)
 			if validWeathers[weather:lower()] then
-				StormFox.SetWeather(weather, intensity or 1)
+				StormFox.SetWeather(weather:lower(), intensity or 1)
 			else
-				local weathersStr = table.concat(table.GetKeys(), ", ")
+				local weathersStr = table.concat(validWeathers, ", ")
 				return false, "invalid weather type (valid types: " .. weathersStr .. ")"
 			end
 		end)
