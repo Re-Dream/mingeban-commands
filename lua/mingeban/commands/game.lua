@@ -135,11 +135,13 @@ if SERVER then
 	exit:AddArgument(ARGTYPE_STRING)
 		:SetOptional(true)
 		:SetName("reason")
+	exit:SetHideChat(true)
 	exit:SetAllowConsole(false)
 
 	local disconnect = mingeban.CreateCommand({"disconnect", "leave"}, function(caller)
 		caller:SendLua[[RunConsoleCommand("disconnect")]]
 	end)
+	disconnect:SetHideChat(true)
 	
 	local PLAYER = FindMetaTable("Player")
 
