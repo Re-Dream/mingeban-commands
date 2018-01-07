@@ -137,6 +137,10 @@ if SERVER then
 		:SetName("reason")
 	exit:SetAllowConsole(false)
 
+	local disconnect = mingeban.CreateCommand({"disconnect", "leave"}, function(caller)
+		caller:SendLua[[RunConsoleCommand("disconnect")]]
+	end)
+	
 	local PLAYER = FindMetaTable("Player")
 
 	util.AddNetworkString("mingeban_command_ignorepac")
