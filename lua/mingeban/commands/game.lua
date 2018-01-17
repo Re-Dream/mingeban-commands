@@ -201,13 +201,14 @@ if SERVER then
 		ply = ply or caller
 		local whatdoicallthis = ""
 		if ply ~= caller then
-			whatdoicallthis = "(requested by ' .. caller:Name() .. ")"
+			whatdoicallthis = "(requested by " .. caller:Name() .. ")"
 		end
 	
-		steamapi('IPlayerService', 'GetOwnedGames', 1, {
+		steamapi("IPlayerService", "GetOwnedGames", 1, {
 			steamid = ply:SteamID64(),
 		}, function(_, data)	
 			local data = util.JSONToTable(data[2])
+			if not data.response.games then return end -- ???
 			
 			for _, game in pairs(data.response.games) do
 				if game.appid == 4000 then
@@ -216,7 +217,7 @@ if SERVER then
 				end
 			end
 			ChatAddText(Color(163, 190, 140), ply:RealName(), " has ", Color(208, 135, 112),		 
-				math.floor(data.playtime_forever / 60)	, " hour(s) of playtime ", whatdoicallthis)
+				math.floor(data.playtime_forever / 60), " hour(s) of playtime ", whatdoicallthis)
 		end)
 		playtimeCooldown[caller] = CurTime() + 30
 	end)
