@@ -190,6 +190,39 @@ if SERVER then
 	local fullupdate = mingeban.CreateCommand("fullupdate", function(caller)
 		caller:SendLua[[LocalPlayer():ConCommand("record fullupdate;stop")]]
 	end)
+	
+	local playtimeCooldown = {}
+	local playtime = mingeban.CreateCommand("playtime", function(caller, line, ply)
+		playtimeCooldown[caller] = playtimeCooldown[caller] or 0
+	
+		if CurTime() < playtimeCooldown[caller] and not caller:IsAdmin() then
+				return false, "command is on cooldown" end
+
+		ply = ply or caller
+		local whatdoicallthis = ""
+		if ply ~= caller then
+			whatdoicallthis = "(requested by ' .. caller:Name() .. ")"
+		end
+	
+		steamapi('IPlayerService', 'GetOwnedGames', 1, {
+			steamid = ply:SteamID64(),
+		}, function(_, data)	
+			local data = util.JSONToTable(data[2])
+			
+			for _, game in pairs(data.response.games) do
+				if game.appid == 4000 then
+					data = game
+					break
+				end
+			end
+			ChatAddText(Color(163, 190, 140), ply:RealName(), " has ", Color(208, 135, 112),		 
+				math.floor(data.playtime_forever / 60)	, " hour(s) of playtime ", whatdoicallthis)
+		end)
+		playtimeCooldown[caller] = CurTime() + 30
+	end)
+	playtime:SetHideChat(true)	
+	playtime:AddArgument(ARGTYPE_PLAYER)
+		:SetOptional(true)
 elseif CLIENT then
 	local function rand(i)
 		return util.SharedRandom(i, -1, 1)
