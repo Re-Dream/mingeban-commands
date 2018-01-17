@@ -181,10 +181,14 @@ if SERVER then
 		end)
 		time:AddArgument(ARGTYPE_NUMBER)
 
-		local temperature = mingeban.CreateCommand("temperature", function(caller, line, tempareture)
+		local temperature = mingeban.CreateCommand("temperature", function(caller, line, temperature)
 			StormFox.SetNetworkData("Temperature", temperature)
 		end)
 		temperature:AddArgument(ARGTYPE_NUMBER)
+	end)
+	
+	local fullupdate = mingeban.CreateCommand("fullupdate", function(caller)
+		caller:SendLua[[LocalPlayer():ConCommand("record fullupdate;stop")]]
 	end)
 elseif CLIENT then
 	local function rand(i)
