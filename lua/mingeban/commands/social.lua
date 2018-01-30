@@ -61,31 +61,31 @@ if SERVER then
 	ytplay:SetAllowConsole(false)
 	ytplay:AddArgument(ARGTYPE_STRING)
 		:SetName("url")
-	
+
 	local geoip = mingeban.CreateCommand({"geoip", "geo", "loc"}, function(caller, line, ply)
 		if not GeoIP then pcall(require, "GeoIP") end
-	
+
 		local colors = {Color(64, 255, 64), Color(255, 255, 64), Color(255, 64, 64)}
 		local data = GeoIP.Get(ply:IPAddress():Split(':')[1])
 		local whatshouldicallthis = ""
 		local output
-		
+
 		if data.city then
 			output = data.city .. ", " .. data.country_name
 		else
 			output = data.country_name
 		end
-		
+
 		if ply ~= caller then
 			whatshouldicallthis = " (requested by " .. caller:Name() .. ")"
 		end
-		
+
 		ChatAddText(colors[math.random(#colors)], ply:Name(), " is located in ", output, whatshouldicallthis)
 	end)
 	geoip:SetAllowConsole(false)
 	geoip:SetHideChat(true)
 	geoip:AddArgument(ARGTYPE_PLAYER)
-	
+
 	local encode = url.escape or string.urlencode
 	local udapi = 'http://api.urbandictionary.com/v0/define?term='
 
@@ -97,18 +97,18 @@ if SERVER then
 		end
 
 		cooldown = CurTime() + 60
-	
+
 		local encoded = encode(line)
 		http.Fetch(udapi .. encoded, function(body)
 			local data = util.JSONToTable(body)
 			if not data.list[1] then return end
-		
+
 			local result = data.list[1]
 			if result.definition:len() >= 500 or result.example:len() >= 500 then
 				ChatAddText(Color(127, 159, 255), '[Urban] Too long.')
 				return
 			end
-		
+
 			ChatAddText(
 				Color(127, 159, 255), '[Urban] ',
 				Color(255, 191, 0),
@@ -155,12 +155,12 @@ local function doLinkOpenFunc(link)
 end
 
 mingeban.CreateCommand({"steam", "steamgroup"}, doLinkOpenFunc("https://steamcommunity.com/groups/Re-Dream")):SetAllowConsole(false)
-mingeban.CreateCommand({"rocket", "liftoff"}, doLinkOpenFunc("https://gmlounge.us/redream/rcon")):SetAllowConsole(false)
+mingeban.CreateCommand({"rocket", "liftoff"}, doLinkOpenFunc("https://re-dream.org/rcon")):SetAllowConsole(false)
 mingeban.CreateCommand("discord", doLinkOpenFunc("https://discord.gg/9Gc8DeA")):SetAllowConsole(false)
 mingeban.CreateCommand("github", doLinkOpenFunc("https://github.com/Re-Dream")):SetAllowConsole(false)
 mingeban.CreateCommand("collection", doLinkOpenFunc("http://steamcommunity.com/sharedfiles/filedetails/?id=880121123")):SetAllowConsole(false)
-mingeban.CreateCommand("website", doLinkOpenFunc("https://gmlounge.us/redream")):SetAllowConsole(false)
-mingeban.CreateCommand("motd", doLinkOpenFunc("https://gmlounge.us/redream/loading")):SetAllowConsole(false)
+mingeban.CreateCommand("website", doLinkOpenFunc("https://re-dream.org")):SetAllowConsole(false)
+mingeban.CreateCommand("motd", doLinkOpenFunc("https://re-dream.org/loading")):SetAllowConsole(false)
 
 local me = mingeban.CreateCommand("me", function(caller, line)
 	ChatAddText(Color(160, 170, 220), "* ", caller, Color(160, 170, 220), " ", line, ".")
