@@ -67,7 +67,7 @@ if SERVER then
 
 		local colors = {Color(64, 255, 64), Color(255, 255, 64), Color(255, 64, 64)}
 		local data = GeoIP.Get(ply:IPAddress():Split(':')[1])
-		local whatshouldicallthis = ""
+		local requestBy = ""
 		local output
 
 		if data.city then
@@ -77,14 +77,14 @@ if SERVER then
 		end
 
 		if ply ~= caller then
-			whatshouldicallthis = " (requested by " .. caller:Name() .. ")"
+			requestBy = " (requested by " .. caller:Name() .. ")"
 		end
 
 		ChatAddText(colors[math.random(#colors)], ply:Name(), " is located in ", output, whatshouldicallthis)
 	end)
+	geoip:AddArgument(ARGTYPE_PLAYER)
 	geoip:SetAllowConsole(false)
 	geoip:SetHideChat(true)
-	geoip:AddArgument(ARGTYPE_PLAYER)
 
 	local encode = url.escape or string.urlencode
 	local udapi = 'http://api.urbandictionary.com/v0/define?term='
@@ -120,6 +120,7 @@ if SERVER then
 			)
 		end)
 	end)
+	define:SetAllowConsole(false)
 else
 	net.Receive("mingeban_command_ytplay", function()
 		local url = net.ReadString()
@@ -165,6 +166,6 @@ mingeban.CreateCommand("motd", doLinkOpenFunc("https://re-dream.org/loading")):S
 local me = mingeban.CreateCommand("me", function(caller, line)
 	ChatAddText(Color(160, 170, 220), "* ", caller, Color(160, 170, 220), " ", line, ".")
 end)
-me:SetHideChat(true)
 me:SetAllowConsole(false)
+me:SetHideChat(true)
 

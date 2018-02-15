@@ -16,13 +16,13 @@ if SERVER then
 			net.WriteInt(maxAngVel or 0, 16)
 		net.Broadcast()
 	end)
-	kill:SetAllowConsole(false)
 	kill:AddArgument(ARGTYPE_NUMBER)
 		:SetOptional(true)
 		:SetName("max velocity")
 	kill:AddArgument(ARGTYPE_NUMBER)
 		:SetOptional(true)
 		:SetName("max angle velocity")
+	kill:SetAllowConsole(false)
 
 	local revive = mingeban.CreateCommand({"revive", "respawn"}, function(caller)
 		if caller:Alive() then return end
@@ -117,10 +117,10 @@ if SERVER then
 			caller:GiveAmmo(amount, wep:GetSecondaryAmmoType())
 		end
 	end)
-	giveammo:SetAllowConsole(false)
 	giveammo:AddArgument(ARGTYPE_NUMBER)
 		:SetName("amount")
 		:SetOptional(true)
+	giveammo:SetAllowConsole(false)
 
 	local exit = mingeban.CreateCommand({"exit", "quit"}, function(caller, line, ply, reason)
 		if ply ~= caller and not caller:IsAdmin() then return false, "you can only exit other players if you are an admin" end
@@ -135,14 +135,14 @@ if SERVER then
 	exit:AddArgument(ARGTYPE_STRING)
 		:SetOptional(true)
 		:SetName("reason")
-	exit:SetHideChat(true)
 	exit:SetAllowConsole(false)
+	exit:SetHideChat(true)
 
 	local disconnect = mingeban.CreateCommand({"disconnect", "leave"}, function(caller)
 		caller:SendLua[[RunConsoleCommand("disconnect")]]
 	end)
 	disconnect:SetHideChat(true)
-	
+
 	local PLAYER = FindMetaTable("Player")
 
 	util.AddNetworkString("mingeban_command_ignorepac")
@@ -152,6 +152,7 @@ if SERVER then
 		net.Send(caller)
 	end)
 	ignorepac:AddArgument(ARGTYPE_PLAYER)
+	ignorepac:SetAllowConsole(false)
 	ignorepac:SetHideChat(true)
 
 	hook.Add("Initialize", "mingeban_command_stormfox", function()
@@ -186,15 +187,15 @@ if SERVER then
 		end)
 		temperature:AddArgument(ARGTYPE_NUMBER)
 	end)
-	
+
 	local fullupdate = mingeban.CreateCommand("fullupdate", function(caller)
 		caller:SendLua[[LocalPlayer():ConCommand("record fullupdate;stop")]]
 	end)
-	
+
 	local playtimeCooldown = {}
 	local playtime = mingeban.CreateCommand("playtime", function(caller, line, ply)
 		playtimeCooldown[caller] = playtimeCooldown[caller] or 0
-	
+
 		if CurTime() < playtimeCooldown[caller] and not caller:IsAdmin() then
 				return false, "command is on cooldown" end
 
@@ -203,27 +204,27 @@ if SERVER then
 		if ply ~= caller then
 			whatdoicallthis = "(requested by " .. caller:Name() .. ")"
 		end
-	
+
 		steamapi("IPlayerService", "GetOwnedGames", 1, {
 			steamid = ply:SteamID64(),
-		}, function(_, data)	
+		}, function(_, data)
 			local data = util.JSONToTable(data[2])
 			if not data.response.games then return end -- ???
-			
+
 			for _, game in pairs(data.response.games) do
 				if game.appid == 4000 then
 					data = game
 					break
 				end
 			end
-			ChatAddText(Color(163, 190, 140), ply:RealName(), " has ", Color(208, 135, 112),		 
+			ChatAddText(Color(163, 190, 140), ply:RealName(), " has ", Color(208, 135, 112),
 				math.floor(data.playtime_forever / 60), " hour(s) of playtime ", whatdoicallthis)
 		end)
 		playtimeCooldown[caller] = CurTime() + 30
 	end)
-	playtime:SetHideChat(true)	
 	playtime:AddArgument(ARGTYPE_PLAYER)
 		:SetOptional(true)
+	playtime:SetHideChat(true)
 elseif CLIENT then
 	local function rand(i)
 		return util.SharedRandom(i, -1, 1)

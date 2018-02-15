@@ -25,7 +25,7 @@ local kick = mingeban.CreateCommand("kick", function(caller, line, ply, reason)
 	mingeban.utils.print(mingeban.colors.Red,
 		tostring(ply) .. "(" .. ply:SteamID() .. ")" ..
 		" has been kicked" ..
-		" by " .. tostring(caller) ..
+		" by " .. (IsValid(caller) and tostring(caller) or "CONSOLE") ..
 		" for reason: '" .. reason ..
 		"'."
 	)
@@ -45,7 +45,7 @@ local rank = mingeban.CreateCommand("rank", function(caller, line, ply, rank)
 	if not caller:CheckUserGroupLevel(rank.name) then return false, "Can't rank players to a higher or similar rank than yours" end
 
 	ply:SetUserGroup(rank.name)
-	mingeban.utils.print(mingeban.colors.Cyan, tostring(caller) .. " ranked " .. tostring(ply) .. " to '" .. rank.name .. "'.")
+	mingeban.utils.print(mingeban.colors.Cyan, (IsValid(caller) and tostring(caller) or "CONSOLE") .. " ranked " .. tostring(ply) .. " to '" .. rank.name .. "'.")
 end)
 rank:AddArgument(ARGTYPE_PLAYER)
 rank:AddArgument(ARGTYPE_STRING)
@@ -62,7 +62,7 @@ local restart = mingeban.CreateCommand("restart", function(caller, line, time)
 			game.ConsoleCommand("changelevel " .. game.GetMap() .. "\n")
 		end)
 	end, txt)
-	mingeban.utils.print(mingeban.colors.Cyan, tostring(caller) .. " started countdown \"" .. txt .. "\"")
+	mingeban.utils.print(mingeban.colors.Cyan, (IsValid(caller) and tostring(caller) or "CONSOLE") .. " started countdown \"" .. txt .. "\"")
 end)
 restart:AddArgument(ARGTYPE_NUMBER)
 	:SetName("time")
@@ -79,7 +79,7 @@ local map = mingeban.CreateCommand("map", function(caller, line, map, time)
 			game.ConsoleCommand("changelevel " .. map .. "\n")
 		end)
 	end, txt)
-	mingeban.utils.print(mingeban.colors.Cyan, tostring(caller) .. " started countdown \"" .. txt .. "\"")
+	mingeban.utils.print(mingeban.colors.Cyan, (IsValid(caller) and tostring(caller) or "CONSOLE") .. " started countdown \"" .. txt .. "\"")
 end)
 map:AddArgument(ARGTYPE_STRING)
 	:SetName("map")
@@ -94,7 +94,7 @@ local resetmap = mingeban.CreateCommand({"resetmap", "cleanmap", "cleanupmap"}, 
 			game.ConsoleCommand("gmod_admin_cleanup\n")
 		end)
 	end, txt)
-	mingeban.utils.print(mingeban.colors.Cyan, tostring(caller) .. " started countdown \"" .. txt .. "\"")
+	mingeban.utils.print(mingeban.colors.Cyan, (IsValid(caller) and tostring(caller) or "CONSOLE") .. " started countdown \"" .. txt .. "\"")
 end)
 resetmap:AddArgument(ARGTYPE_NUMBER)
 	:SetName("time")
@@ -105,7 +105,7 @@ local clean = mingeban.CreateCommand({"clean", "cleanup"}, function(caller, line
 		for sid in next, prostasia.Disconnected do
 			prostasia.Disconnected[sid] = 0
 		end
-		mingeban.utils.print(mingeban.colors.Cyan, tostring(caller) .. " cleaned up stuff from disconnected players.")
+		mingeban.utils.print(mingeban.colors.Cyan, (IsValid(caller) and tostring(caller) or "CONSOLE") .. " cleaned up stuff from disconnected players.")
 		return
 	end
 
@@ -126,7 +126,7 @@ local clean = mingeban.CreateCommand({"clean", "cleanup"}, function(caller, line
 		end
 	end
 	local str = istable(plyName) and "{" .. table.concat(plyName, ", ") .. "}" or plyName
-	mingeban.utils.print(mingeban.colors.Cyan, tostring(caller) .. " cleaned up stuff from \"" .. str .. "\"")
+	mingeban.utils.print(mingeban.colors.Cyan, (IsValid(caller) and tostring(caller) or "CONSOLE") .. " cleaned up stuff from \"" .. str .. "\"")
 end)
 clean:AddArgument(ARGTYPE_STRING)
 
@@ -263,7 +263,7 @@ local ban = mingeban.CreateCommand("ban", function(caller, line, ply, time, reas
 		tostring(ply) .. (foundPlayer and " (" .. ply:SteamID() .. ")" or "") ..
 		" has been banned " ..
 		(timeNum == 0 and "permanently" or "for " .. string.NiceTime(timeNum)) ..
-		" by " .. tostring(caller) ..
+		" by " .. (IsValid(caller) and tostring(caller) or "CONSOLE") ..
 		" for reason: '" .. reason ..
 		"'."
 	)
@@ -284,7 +284,7 @@ local unban = mingeban.CreateCommand("unban", function(caller, line, ply)
 	ply = ply:upper():Trim()
 	if not mingeban.utils.validSteamID(ply) then return false, "Invalid SteamID" end
 
-	mingeban.utils.print(mingeban.colors.Cyan, tostring(caller) .. " unbanned " .. tostring(ply) .. ".")
+	mingeban.utils.print(mingeban.colors.Cyan, (IsValid(caller) and tostring(caller) or "CONSOLE") .. " unbanned " .. tostring(ply) .. ".")
 	mingeban.Unban(ply)
 end)
 unban:AddArgument(ARGTYPE_STRING)
@@ -315,11 +315,11 @@ if banni then
 			tostring(ply) .. (foundPlayer and " (" .. ply:SteamID() .. ")" or "") ..
 			" has been banni'd " ..
 			(timeNum == 0 and "permanently" or "for " .. string.NiceTime(timeNum)) ..
-			" by " .. tostring(caller) ..
+			" by " .. (IsValid(caller) and tostring(caller) or "CONSOLE") ..
 			" for reason: '" .. reason ..
 			"'."
 		)
-		banni.ban(IsValid(caller) and caller:SteamID() or caller, type(ply) == "string" and ply or ply:SteamID(), timeNum, reason)
+		banni.ban(IsValid(caller) and caller:SteamID() or "CONSOLE", type(ply) == "string" and ply or ply:SteamID(), timeNum, reason)
 	end)
 	bbaann:AddArgument(ARGTYPE_STRING)
 		:SetName("player/steamid")
@@ -350,7 +350,7 @@ if banni then
 			" with reason: '" .. reason ..
 			"'."
 		)
-		banni.unban(IsValid(caller) and caller:SteamID() or caller, type(ply) == "string" and ply or ply:SteamID(), reason)
+		banni.unban(IsValid(caller) and caller:SteamID() or "CONSOLE", type(ply) == "string" and ply or ply:SteamID(), reason)
 	end)
 	unbbaann:AddArgument(ARGTYPE_STRING)
 		:SetName("player/steamid")
@@ -367,6 +367,7 @@ if ok then
 		caller:Notify("sv_cheats turned " .. (b and "on" or "off") .. ".", NOTIFY_HINT, 5)
 	end)
 	cheats:AddArgument(ARGTYPE_BOOLEAN)
+	cheats:SetAllowConsole(false)
 end
 
 --[[ server stays dead with _restart rip

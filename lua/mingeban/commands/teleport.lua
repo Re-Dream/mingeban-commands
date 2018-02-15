@@ -129,9 +129,9 @@ local go = mingeban.CreateCommand({"go", "goto"}, function(caller, line, pos, y,
 	end
 	return goto(caller, pos)
 end)
-go:SetAllowConsole(false)
 go:AddArgument(ARGTYPE_VARARGS)
 	:SetName("target")
+go:SetAllowConsole(false)
 
 local bring = mingeban.CreateCommand("bring", function(caller, line, plys)
 	if #plys < 2 then
@@ -146,12 +146,12 @@ local bring = mingeban.CreateCommand("bring", function(caller, line, plys)
 		end
 	end
 end)
-bring:SetAllowConsole(false)
 bring:AddArgument(ARGTYPE_PLAYERS)
 	:SetName("target")
 	:SetFilter(function(caller, ent)
 		return caller:IsAdmin() and true or caller:IsFriend(ent)
 	end)
+bring:SetAllowConsole(false)
 
 local tp = mingeban.CreateCommand({"tp", "teleport", "blink"}, function(caller)
 	local traceData = util.GetPlayerTrace(caller)
