@@ -42,8 +42,10 @@ local rank = mingeban.CreateCommand("rank", function(caller, line, ply, rank)
 	local rank = mingeban.GetRank(rank)
 	if not rank then return false, "Rank doesn't exist" end
 	-- if not caller:CheckUserGroupLevel(ply:GetUserGroup()) then return false, "Can't target players with a higher or similar rank than yours" end
-	if not caller:CheckUserGroupLevel(rank.name) then return false, "Can't rank players to a higher or similar rank than yours" end
-
+	if caller ~= "CONSOLE" then
+		if not caller:CheckUserGroupLevel(rank.name) then return false, "Can't rank players to a higher or similar rank than yours" end
+	end
+	
 	ply:SetUserGroup(rank.name)
 	mingeban.utils.print(mingeban.colors.Cyan, (IsValid(caller) and tostring(caller) or "CONSOLE") .. " ranked " .. tostring(ply) .. " to '" .. rank.name .. "'.")
 end)
