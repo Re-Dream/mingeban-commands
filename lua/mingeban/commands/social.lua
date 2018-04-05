@@ -131,6 +131,7 @@ else
 		end
 	end)
 
+	--[[ would end up conflicting with markdown (coming soon)
 	hook.Add("OnPlayerChat", "mingeban_command_me", function(caller, line)
 		local me = line:Trim():match("^%*(.*)%*$")
 		if me then
@@ -138,6 +139,7 @@ else
 			return true
 		end
 	end)
+	]]
 end
 
 if CLIENT then return end
@@ -164,7 +166,10 @@ mingeban.CreateCommand("website", doLinkOpenFunc("https://re-dream.org")):SetAll
 mingeban.CreateCommand("motd", doLinkOpenFunc("https://re-dream.org/loading")):SetAllowConsole(false)
 
 local me = mingeban.CreateCommand("me", function(caller, line)
-	ChatAddText(Color(160, 170, 220), "* ", caller, Color(160, 170, 220), " ", line, ".")
+	if not line:match("%.$") then
+		line = line .. "."
+	end
+	ChatAddText(Color(160, 170, 220), "* ", caller, Color(160, 170, 220), " ", line)
 end)
 me:SetAllowConsole(false)
 me:SetHideChat(true)
