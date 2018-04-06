@@ -45,7 +45,7 @@ local rank = mingeban.CreateCommand("rank", function(caller, line, ply, rank)
 	if caller ~= "CONSOLE" then
 		if not caller:CheckUserGroupLevel(rank.name) then return false, "Can't rank players to a higher or similar rank than yours" end
 	end
-	
+
 	ply:SetUserGroup(rank.name)
 	mingeban.utils.print(mingeban.colors.Cyan, (IsValid(caller) and tostring(caller) or "CONSOLE") .. " ranked " .. tostring(ply) .. " to '" .. rank.name .. "'.")
 end)
@@ -218,24 +218,18 @@ unfreeze:AddArgument(ARGTYPE_PLAYER)
 local function calcTime(time)
 	local timeNum = 0
 	local timeInput = false
-	for months in time:gmatch("(%d+)M") do
-		timeNum = timeNum + (86400 * 30) * months
-		timeInput = true
-	end
-	for days in time:gmatch("(%d+)d") do
-		timeNum = timeNum + 86400 * days
-		timeInput = true
-	end
-	for hours in time:gmatch("(%d+)h") do
-		timeNum = timeNum + 3600 * hours
-		timeInput = true
-	end
-	for minutes in time:gmatch("(%d+)m") do
-		timeNum = timeNum + 60 * minutes
-		timeInput = true
-	end
-	for seconds in time:gmatch("(%d+)s") do
-		timeNum = timeNum + seconds
+	for amt, unit in time:gmatch("(%d+)(%a)") do
+		if unit == "M" then
+			timeNum = timeNum + (86400 * 30) * amt
+		elseif unit == "d" then
+			timeNum = timeNum + 86400 * amt
+		elseif unit == "h" then
+			timeNum = timeNum + 3600 * amt
+		elseif unit == "m" then
+			timeNum = timeNum + 60 * amt
+		elseif unit == "s" then
+			timeNum = timeNum + amt
+		end
 		timeInput = true
 	end
 
