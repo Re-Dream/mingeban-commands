@@ -174,3 +174,9 @@ end)
 me:SetAllowConsole(false)
 me:SetHideChat(true)
 
+mingeban.CreateCommand("title", function(caller, line)
+	if #line > 120 then return false, 'too long' end
+	
+	caller:SetPData('title', line)
+	caller:SetNWString('title', line)
+end)
